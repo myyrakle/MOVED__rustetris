@@ -1,0 +1,192 @@
+use crate::types::tetris_cell::TetrisCell;
+
+pub type MinoType = [[TetrisCell; 4]; 4];
+
+pub const I: MinoType = [
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Full,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+];
+
+pub const L: MinoType = [
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+];
+
+pub const J: MinoType = [
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+];
+
+pub const O: MinoType = [
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+];
+
+pub const S: MinoType = [
+    [
+        TetrisCell::Empty,
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+];
+
+pub const Z: MinoType = [
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+];
+
+pub const T: MinoType = [
+    [
+        TetrisCell::Empty,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Full,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+    [
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+        TetrisCell::Empty,
+    ],
+];
