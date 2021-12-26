@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use crate::components::gamebox;
 use yew::prelude::*;
 
@@ -6,7 +8,19 @@ pub enum Msg {
 }
 
 pub struct Model {
-    value: i64,
+    value: Arc<Mutex<i64>>,
+}
+
+struct Foo {
+    foo: Arc<Mutex<i64>>,
+}
+
+impl yew::scheduler::Runnable for Foo {
+    fn run(self: Box<Self>) {
+        let mut foo = self.foo.lock().unwrap();
+
+        *foo += 1;
+    }
 }
 
 impl Component for Model {
@@ -14,15 +28,20 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self { value: 0 }
+        Self {
+            value: Arc::new(Mutex::new(0)),
+        }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::AddOne => {
-                self.value += 1;
                 // the value has changed so we need to
                 // re-render for it to appear on the page
+
+                yew::scheduler::push(Box::new(Foo {
+                    foo: Arc::clone(&self.value),
+                }));
                 true
             }
         }
@@ -34,6 +53,8 @@ impl Component for Model {
         html! {
             <div>
                 <gamebox::Model/>
+                <h1>{ self.value.lock().unwrap() }</h1>
+                <button onclick={link.callback(|_| Msg::AddOne)}>{ "Add One" }</button>
             </div>
         }
     }
