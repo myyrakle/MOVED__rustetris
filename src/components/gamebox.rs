@@ -1,17 +1,22 @@
 use std::collections::VecDeque;
 use std::error::Error;
-use std::sync::{Arc, Mutex, MutexGuard};
+use std::sync::{Arc, Mutex};
 
+use futures_util::stream::StreamExt;
+use gloo_timers::callback::Interval;
+use gloo_timers::future::IntervalStream;
+use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
-use crate::functions::random;
+use crate::functions::{random, render};
 use crate::minos::shapes::{MinoType, I, J, L, O, S, T, Z};
+use crate::options::game_option::GameOption;
 use crate::types::game_info::GameInfo;
+use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
-use crate::{options::game_option::GameOption, types::point::Point};
 
 pub enum Msg {
-    AddOne,
+    GameStart,
 }
 
 pub struct Model {
@@ -33,13 +38,17 @@ impl Model {
         let column_count = option.column_count.unwrap_or(10);
         let row_count = option.row_count.unwrap_or(20);
         let bag_mode = option.bag_mode.unwrap_or(true);
-        let tetris_board = vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize];
+        let tetris_board = TetrisBoard {
+            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
+            column_count,
+            row_count,
+        };
 
         let mino_list = vec![I, L, J, S, Z, O, T];
 
         let game_info = GameInfo {
             game_score: 0,
-            render_interval: 30,
+            render_interval: 100,
             tick_interval: 1000,
             current_position: None,
             current_mino: None,
@@ -49,6 +58,8 @@ impl Model {
             tetris_board,
             on_play: false,
             lose: false,
+            tick_interval_handler: None,
+            render_interval_handler: None,
         };
 
         Self {
@@ -65,29 +76,71 @@ impl Model {
         self.game_info.lock().ok()?.on_play = true;
         self.game_info.lock().ok()?.lose = false;
 
+        // 틱 스레드
         let game_info = Arc::clone(&self.game_info);
-        std::thread::spawn(move || loop {
-            let time = std::time::Duration::from_millis(game_info.lock().unwrap().tick_interval);
+        spawn_local(async move {
+            let game_info = game_info;
 
-            if game_info.lock().unwrap().on_play {
-            } else {
-                break;
+            let render_interval = game_info.lock().ok().unwrap().render_interval;
+
+            let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
+                let game_info = game_info.lock().unwrap();
+
+                if game_info.on_play {
+                    render::render(
+                        game_info.tetris_board.unfold(),
+                        game_info.tetris_board.column_count,
+                        game_info.tetris_board.row_count,
+                    );
+                } else {
+                }
+            });
+
+            loop {
+                let next = future_list.next();
+                next.await;
             }
-
-            std::thread::sleep(time);
         });
 
+        // 렌더링 스레드
         let game_info = Arc::clone(&self.game_info);
-        std::thread::spawn(move || loop {
-            let time = std::time::Duration::from_millis(game_info.lock().unwrap().render_interval);
+        spawn_local(async move {
+            let game_info = game_info;
 
-            if game_info.lock().unwrap().on_play {
-            } else {
-                break;
+            let render_interval = game_info.lock().ok().unwrap().render_interval;
+
+            let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
+                let game_info = game_info.lock().unwrap();
+
+                if game_info.on_play {
+                    render::render(
+                        game_info.tetris_board.unfold(),
+                        game_info.tetris_board.column_count,
+                        game_info.tetris_board.row_count,
+                    );
+                } else {
+                }
+            });
+
+            loop {
+                let next = future_list.next();
+                next.await;
             }
-
-            std::thread::sleep(time);
         });
+        // self.game_info.lock().ok()?.render_interval_handler =
+        //     Some(Interval::new(render_interval as u32, move || loop {
+        //         let game_info = game_info.lock().unwrap();
+
+        //         if game_info.on_play {
+        //             render::render(
+        //                 game_info.tetris_board.unfold(),
+        //                 game_info.tetris_board.column_count,
+        //                 game_info.tetris_board.row_count,
+        //             );
+        //         } else {
+        //             break;
+        //         }
+        //     }));
 
         Some(())
     }
@@ -110,8 +163,14 @@ impl Model {
     // 보드 초기화
     pub fn init_board(&self) -> Option<()> {
         let mut game_info = self.game_info.lock().ok().unwrap();
-        game_info.tetris_board =
-            vec![vec![TetrisCell::Empty; self.column_count as usize]; self.row_count as usize];
+        game_info.tetris_board = TetrisBoard {
+            cells: vec![
+                vec![TetrisCell::Empty; self.column_count as usize];
+                self.row_count as usize
+            ],
+            row_count: self.row_count,
+            column_count: self.column_count,
+        };
 
         Some(())
     }
@@ -187,21 +246,22 @@ impl Component for Model {
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::AddOne => {
+            Msg::GameStart => {
                 // the value has changed so we need to
                 // re-render for it to appear on the page
+                self.start_game();
                 true
             }
         }
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        // This gives us a component's "`Scope`" which allows us to send messages, etc to the component.
         let link = ctx.link();
+
         html! {
             <span>
                 <canvas id="gamebox" width="300" height="600"></canvas>
-                <button>{"Start"}</button>
+                <button onclick={link.callback(|_| Msg::GameStart)}>{"Start"}</button>
             </span>
         }
     }

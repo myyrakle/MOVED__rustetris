@@ -1,8 +1,10 @@
 use std::collections::VecDeque;
 
+use gloo_timers::callback::Interval;
+
 use crate::minos::shapes::MinoType;
 
-use super::{point::Point, tetris_board::TetrisBoard, tetris_cell::TetrisCell};
+use super::{point::Point, tetris_board::TetrisBoard};
 
 pub struct GameInfo {
     pub game_score: u64, //게임 점수
@@ -20,4 +22,7 @@ pub struct GameInfo {
 
     pub render_interval: u64, //렌더링 시간간격(밀리초)
     pub tick_interval: u64,   //틱당 시간간격(밀리초)
+
+    pub tick_interval_handler: Option<Interval>,
+    pub render_interval_handler: Option<Interval>,
 }
