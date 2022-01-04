@@ -27,7 +27,8 @@ pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
 
     // 흰색으로 세팅
     context.set_fill_style(&JsValue::from_str("#4aa8d8"));
-    context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
+    context.fill_rect(0.0, 0.0, 11111 as f64, 11111 as f64);
+    //context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
 
     for x in 0..board_width {
         let x = x as usize;
