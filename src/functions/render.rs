@@ -1,12 +1,43 @@
 use std::f64;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use web_sys::CanvasRenderingContext2d;
 
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
 
 #[wasm_bindgen]
+pub fn draw_block(
+    context: CanvasRenderingContext2d,
+    x: f64,
+    y: f64,
+    block_width_size: f64,
+    block_height_size: f64,
+    color: &str,
+) {
+    context.set_fill_style(&JsValue::from_str(color));
+    context.fill_rect(
+        block_width_size * x,
+        block_height_size * y,
+        block_width_size - 1.0,
+        block_height_size - 1.0,
+    );
+    context.stroke_rect(
+        block_width_size * x,
+        block_height_size * y,
+        block_width_size - 1.0,
+        block_height_size - 1.0,
+    );
+}
+
+static BOARD_HEIGHT_SIZE: f64 = 600_f64;
+static BOARD_WIDTH_SIZE: f64 = 300_f64;
+
+#[wasm_bindgen]
 pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
+    let block_width_size = BOARD_WIDTH_SIZE / board_width;
+    let block_height_size = BOARD_HEIGHT_SIZE / board_height;
+
     let tetris_board = TetrisBoard::from_unfold(board_unfolded, board_width, board_height);
 
     let document = web_sys::window().unwrap().document().unwrap();
