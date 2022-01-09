@@ -15,7 +15,8 @@ pub fn draw_block(
     block_height_size: f64,
     color: &str,
 ) {
-    context.set_fill_style(&JsValue::from_str(color));
+    context.set_stroke_style(&JsValue::from_str("black")); // 테두리 색상
+    context.set_fill_style(&JsValue::from_str(color)); // 내부 색상
     context.fill_rect(
         block_width_size * x,
         block_height_size * y,
@@ -35,8 +36,8 @@ static BOARD_WIDTH_SIZE: f64 = 300_f64;
 
 #[wasm_bindgen]
 pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
-    let block_width_size = BOARD_WIDTH_SIZE / board_width;
-    let block_height_size = BOARD_HEIGHT_SIZE / board_height;
+    let block_width_size = BOARD_WIDTH_SIZE / board_width as f64;
+    let block_height_size = BOARD_HEIGHT_SIZE / board_height as f64;
 
     let tetris_board = TetrisBoard::from_unfold(board_unfolded, board_width, board_height);
 
@@ -71,7 +72,14 @@ pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
                 context.set_stroke_style(&JsValue::from_str("black"));
                 // context.strokeStyle = 'black';
                 // context.fillStyle = colors[board[ y ][ x ]-1];
-                // drawBlock( x, y );
+                draw_block(
+                    context.clone(),
+                    x as f64,
+                    y as f64,
+                    block_width_size,
+                    block_height_size,
+                    "green",
+                );
             }
         }
     }

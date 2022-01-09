@@ -3,7 +3,6 @@ use std::error::Error;
 use std::sync::{Arc, Mutex};
 
 use futures_util::stream::StreamExt;
-use gloo_timers::callback::Interval;
 use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
@@ -76,6 +75,8 @@ impl Model {
         self.game_info.lock().ok()?.on_play = true;
         self.game_info.lock().ok()?.lose = false;
 
+        log::info!("GAME START");
+
         // 틱 스레드
         let game_info = Arc::clone(&self.game_info);
         spawn_local(async move {
@@ -84,6 +85,8 @@ impl Model {
             let render_interval = game_info.lock().ok().unwrap().render_interval;
 
             let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
+                log::info!("TICK");
+
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
@@ -93,6 +96,7 @@ impl Model {
                         game_info.tetris_board.row_count,
                     );
                 } else {
+                    // NONE
                 }
             });
 
@@ -110,6 +114,8 @@ impl Model {
             let render_interval = game_info.lock().ok().unwrap().render_interval;
 
             let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
+                log::info!("RENDER");
+
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
@@ -119,6 +125,7 @@ impl Model {
                         game_info.tetris_board.row_count,
                     );
                 } else {
+                    // NONE
                 }
             });
 
@@ -127,20 +134,6 @@ impl Model {
                 next.await;
             }
         });
-        // self.game_info.lock().ok()?.render_interval_handler =
-        //     Some(Interval::new(render_interval as u32, move || loop {
-        //         let game_info = game_info.lock().unwrap();
-
-        //         if game_info.on_play {
-        //             render::render(
-        //                 game_info.tetris_board.unfold(),
-        //                 game_info.tetris_board.column_count,
-        //                 game_info.tetris_board.row_count,
-        //             );
-        //         } else {
-        //             break;
-        //         }
-        //     }));
 
         Some(())
     }
