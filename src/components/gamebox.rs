@@ -8,7 +8,7 @@ use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
 use crate::functions::{random, render};
-use crate::minos::shapes::{MinoType, I, J, L, O, S, T, Z};
+use crate::minos::shapes::{MinoShape, I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
 use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
@@ -23,7 +23,7 @@ pub struct Model {
     row_count: u8,    //테트리스 행 개수(세로 길이)
     bag_mode: bool,   //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
 
-    mino_list: Vec<MinoType>, //미노 리스트
+    mino_list: Vec<MinoShape>, //미노 리스트
 
     game_info: Arc<Mutex<GameInfo>>,
 }
@@ -82,9 +82,9 @@ impl Model {
         spawn_local(async move {
             let game_info = game_info;
 
-            let render_interval = game_info.lock().ok().unwrap().render_interval;
+            let tick_interval = game_info.lock().ok().unwrap().tick_interval;
 
-            let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
+            let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
                 log::info!("TICK");
 
                 let game_info = game_info.lock().unwrap();
@@ -188,7 +188,7 @@ impl Model {
     }
 
     // 가방에서 미노를 새로 가져옴.
-    pub fn get_mino(&self) -> Result<MinoType, Box<dyn Error>> {
+    pub fn get_mino(&self) -> Result<MinoShape, Box<dyn Error>> {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
         // 현재 가방이 비어있다면
@@ -240,8 +240,6 @@ impl Component for Model {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::GameStart => {
-                // the value has changed so we need to
-                // re-render for it to appear on the page
                 self.start_game();
                 true
             }
