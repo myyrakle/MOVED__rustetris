@@ -1,11 +1,13 @@
 <!DOCTYPE html><html><head>
     <meta charset="utf-8">
-    <title>Yew App</title>
+    <title>Rustetris</title>
   
-<link rel="preload" href="/index-f39b8f80a2c93b14_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/index-f39b8f80a2c93b14.js"></head>
-<body><script type="module">import init from '/index-f39b8f80a2c93b14.js';init('/index-f39b8f80a2c93b14_bg.wasm');</script><script>(function () {
-    var url = 'ws://' + window.location.host + '/_trunk/ws';
+<link rel="preload" href="/rustetris-605991050a306f82_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/rustetris-605991050a306f82.js"></head>
+<body>
+<script type="module">import init from '/rustetris-605991050a306f82.js';init('/rustetris-605991050a306f82_bg.wasm');</script><script>(function () {
+    var protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    var url = protocol + '//' + window.location.host + '/_trunk/ws';
     var poll_interval = 5000;
     var reload_upon_connect = () => {
         window.setTimeout(
