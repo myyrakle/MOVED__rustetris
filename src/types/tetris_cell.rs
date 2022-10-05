@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum TetrisCell {
     Empty = "white",
     Red = "red",

@@ -30,6 +30,12 @@ pub struct Model {
     game_info: Arc<Mutex<GameInfo>>,
 }
 
+impl Default for Model {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Model {
     pub fn new() -> Self {
         Self::with_option(Default::default())

@@ -1,3 +1,4 @@
+#![allow(clippy::let_unit_value)]
 use std::sync::{Arc, Mutex};
 
 use crate::components::gamebox;
@@ -50,6 +51,7 @@ impl Component for Model {
     fn view(&self, ctx: &Context<Self>) -> Html {
         // This gives us a component's "`Scope`" which allows us to send messages, etc to the component.
         let link = ctx.link();
+
         html! {
             <div>
                 <gamebox::Model/>
