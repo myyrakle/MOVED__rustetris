@@ -1,9 +1,9 @@
 pub mod components;
-pub mod functions;
 pub mod js_bind;
 pub mod minos;
 pub mod options;
 pub mod types;
+pub mod util;
 pub mod wasm_bind;
 
 fn main() {

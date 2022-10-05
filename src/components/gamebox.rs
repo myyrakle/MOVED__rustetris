@@ -7,13 +7,13 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
-use crate::functions::random;
 use crate::minos::shapes::{MinoShape, I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
 use crate::types::bag::BagType;
 use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
+use crate::util::random;
 use crate::wasm_bind;
 
 pub enum Msg {
