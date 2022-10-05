@@ -26,7 +26,6 @@ pub struct Model {
     bag_mode: BagType, //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
 
     mino_list: Vec<MinoShape>, //미노 리스트
-
     game_info: Arc<Mutex<GameInfo>>,
 }
 
@@ -101,17 +100,9 @@ impl Model {
 
                 let game_info = game_info.lock().unwrap();
 
-                if game_info.on_play {
-                    wasm_bind::render(
-                        game_info.tetris_board.unfold(),
-                        game_info.tetris_board.board_width,
-                        game_info.tetris_board.board_height,
-                        game_info.tetris_board.column_count,
-                        game_info.tetris_board.row_count,
-                    );
-                } else {
-                    // NONE
-                }
+                let current_mino = game_info.current_mino;
+
+                ()
             });
 
             loop {
