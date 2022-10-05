@@ -38,11 +38,15 @@ impl Model {
     pub fn with_option(option: GameOption) -> Self {
         let column_count = option.column_count;
         let row_count = option.row_count;
+        let board_height = option.board_height;
+        let board_width = option.board_width;
         let bag_mode = option.bag_mode;
         let tetris_board = TetrisBoard {
             cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
             column_count,
             row_count,
+            board_height,
+            board_width,
         };
 
         let mino_list = vec![I, L, J, S, Z, O, T];
@@ -94,6 +98,8 @@ impl Model {
                 if game_info.on_play {
                     wasm_bind::render(
                         game_info.tetris_board.unfold(),
+                        game_info.tetris_board.board_width,
+                        game_info.tetris_board.board_height,
                         game_info.tetris_board.column_count,
                         game_info.tetris_board.row_count,
                     );
@@ -123,6 +129,8 @@ impl Model {
                 if game_info.on_play {
                     wasm_bind::render(
                         game_info.tetris_board.unfold(),
+                        game_info.tetris_board.board_width,
+                        game_info.tetris_board.board_height,
                         game_info.tetris_board.column_count,
                         game_info.tetris_board.row_count,
                     );
@@ -165,6 +173,8 @@ impl Model {
             ],
             row_count: self.row_count,
             column_count: self.column_count,
+            board_height: game_info.tetris_board.board_height,
+            board_width: game_info.tetris_board.board_width,
         };
 
         Some(())

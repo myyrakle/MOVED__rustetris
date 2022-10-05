@@ -4,6 +4,8 @@ use itertools::Itertools;
 pub struct TetrisBoard {
     pub column_count: u8, //테트리스 열 개수(가로 길이)
     pub row_count: u8,    //테트리스 행 개수(세로 길이)
+    pub board_width: u32,
+    pub board_height: u32,
     pub cells: Vec<Vec<TetrisCell>>,
 }
 
@@ -17,10 +19,18 @@ impl TetrisBoard {
             .collect::<Vec<i32>>()
     }
 
-    pub fn from_unfold(unfolded: Vec<i32>, column_count: u8, row_count: u8) -> Self {
+    pub fn from_unfold(
+        unfolded: Vec<i32>,
+        board_width: u32,
+        board_height: u32,
+        column_count: u8,
+        row_count: u8,
+    ) -> Self {
         Self {
             column_count,
             row_count,
+            board_width,
+            board_height,
             cells: unfolded
                 .into_iter()
                 .map(|e| TetrisCell::try_from(e).unwrap())

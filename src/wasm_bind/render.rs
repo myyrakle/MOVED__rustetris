@@ -8,6 +8,7 @@ use wasm_bindgen::JsCast;
 
 use crate::js_bind::body::body;
 use crate::js_bind::request_animation_frame::request_animation_frame;
+use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
 
@@ -17,11 +18,23 @@ static BOARD_HEIGHT_SIZE: f64 = 600_f64;
 static BOARD_WIDTH_SIZE: f64 = 300_f64;
 
 #[wasm_bindgen]
-pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
+pub fn render(
+    board_unfolded: Vec<i32>,
+    board_width: u32,
+    board_height: u32,
+    column_count: u8,
+    row_count: u8,
+) {
     let block_width_size = BOARD_WIDTH_SIZE / board_width as f64;
     let block_height_size = BOARD_HEIGHT_SIZE / board_height as f64;
 
-    let tetris_board = TetrisBoard::from_unfold(board_unfolded, board_width, board_height);
+    let tetris_board = TetrisBoard::from_unfold(
+        board_unfolded,
+        board_width,
+        board_height,
+        column_count,
+        row_count,
+    );
 
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("gamebox").unwrap();
