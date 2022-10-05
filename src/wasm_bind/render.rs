@@ -14,9 +14,6 @@ use crate::types::tetris_cell::TetrisCell;
 
 use super::draw::draw_block;
 
-static BOARD_HEIGHT_SIZE: f64 = 600_f64;
-static BOARD_WIDTH_SIZE: f64 = 300_f64;
-
 #[wasm_bindgen]
 pub fn render(
     board_unfolded: Vec<i32>,
@@ -25,8 +22,8 @@ pub fn render(
     column_count: u8,
     row_count: u8,
 ) {
-    let block_width_size = BOARD_WIDTH_SIZE / board_width as f64;
-    let block_height_size = BOARD_HEIGHT_SIZE / board_height as f64;
+    let block_width_size = (board_width / column_count as u32) as f64;
+    let block_height_size = (board_height / row_count as u32) as f64;
 
     let tetris_board = TetrisBoard::from_unfold(
         board_unfolded,
@@ -53,44 +50,54 @@ pub fn render(
     context.begin_path();
 
     // 흰색으로 세팅
-    context.set_fill_style(&JsValue::from_str("#4aa8d8"));
+    context.set_fill_style(&JsValue::from_str("#FFFFFF"));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
-    context.set_stroke_style(&JsValue::from_str("black"));
-    log::info!("{} {}", board_width, board_height);
+    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
 
-    for x in 0..board_width {
+    for x in 0..column_count {
         let x = x as usize;
 
-        for y in 0..board_height {
+        for y in 0..row_count {
             let y = y as usize;
 
             if tetris_board.cells[y][x] != TetrisCell::Empty {
-                context.set_stroke_style(&JsValue::from_str("black"));
-                // context.strokeStyle = 'black';
-                // context.fillStyle = colors[board[ y ][ x ]-1];
+                let x = x as f64 * block_width_size;
+                let y = y as f64 * block_height_size;
                 draw_block(
                     context.clone(),
-                    x as f64,
-                    y as f64,
+                    x,
+                    y,
                     block_width_size,
                     block_height_size,
                     "green",
+                );
+            } else {
+                let x = x as f64 * block_width_size;
+                let y = y as f64 * block_height_size;
+                draw_block(
+                    context.clone(),
+                    x,
+                    y,
+                    block_width_size,
+                    block_height_size,
+                    "#FFFFFF",
                 );
             }
         }
     }
 
-    context.set_fill_style(&JsValue::from_str("red"));
-    context.set_stroke_style(&JsValue::from_str("black"));
+    // context.set_fill_style(&JsValue::from_str("red"));
+    // context.set_stroke_style(&JsValue::from_str("black"));
 
-    for y in 0..4 {
-        for x in 0..4 {
-            if tetris_board.cells[y][x] != TetrisCell::Empty {
-                // context.fillStyle = colors[ current[ y ][ x ] - 1 ];
-                // drawBlock( currentX + x, currentY + y );
-            }
-        }
-    }
+    // for y in 0..4 {
+    //     for x in 0..4 {
+    //         if tetris_board.cells[y][x] != TetrisCell::Empty {
+    //             // context.fillStyle = colors[ current[ y ][ x ] - 1 ];
+    //             // drawBlock( currentX + x, currentY + y );
+    //         }
+    //     }
+    // }
 
     //  const BLOCK_W = W / COLS, BLOCK_H = H / ROWS;
 
