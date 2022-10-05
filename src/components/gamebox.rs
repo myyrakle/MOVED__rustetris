@@ -7,12 +7,13 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
-use crate::functions::{random, render};
+use crate::functions::random;
 use crate::minos::shapes::{MinoShape, I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
 use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
+use crate::wasm_bind;
 
 pub enum Msg {
     GameStart,
@@ -85,12 +86,12 @@ impl Model {
             let tick_interval = game_info.lock().ok().unwrap().tick_interval;
 
             let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
-                log::info!("TICK");
+                //log::info!("TICK");
 
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
-                    render::render(
+                    wasm_bind::render(
                         game_info.tetris_board.unfold(),
                         game_info.tetris_board.column_count,
                         game_info.tetris_board.row_count,
@@ -114,12 +115,12 @@ impl Model {
             let render_interval = game_info.lock().ok().unwrap().render_interval;
 
             let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
-                log::info!("RENDER");
+                //log::info!("RENDER");
 
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
-                    render::render(
+                    wasm_bind::render(
                         game_info.tetris_board.unfold(),
                         game_info.tetris_board.column_count,
                         game_info.tetris_board.row_count,

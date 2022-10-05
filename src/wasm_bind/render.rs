@@ -1,9 +1,13 @@
+use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
+use std::cell::RefCell;
 use std::f64;
-use std::sync::Mutex;
+use std::rc::Rc;
 use wasm_bindgen::JsCast;
 
+use crate::js_bind::body::body;
+use crate::js_bind::request_animation_frame::request_animation_frame;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
 
@@ -38,6 +42,8 @@ pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
     // 흰색으로 세팅
     context.set_fill_style(&JsValue::from_str("#4aa8d8"));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
+    context.set_stroke_style(&JsValue::from_str("black"));
+    log::info!("{} {}", board_width, board_height);
 
     for x in 0..board_width {
         let x = x as usize;
@@ -83,21 +89,8 @@ pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
     // }
 }
 
-#[wasm_bindgen(start)]
-pub fn run(foo: Arc<Mutex<i32>>) -> Result<(), JsValue> {
-    // Here we want to call `requestAnimationFrame` in a loop, but only a fixed
-    // number of times. After it's done we want all our resources cleaned up. To
-    // achieve this we're using an `Rc`. The `Rc` will eventually store the
-    // closure we want to execute on each frame, but to start out it contains
-    // `None`.
-    //
-    // After the `Rc` is made we'll actually create the closure, and the closure
-    // will reference one of the `Rc` instances. The other `Rc` reference is
-    // used to store the closure, request the first frame, and then is dropped
-    // by this function.
-    //
-    // Inside the closure we've got a persistent `Rc` reference, which we use
-    // for all future iterations of the loop
+#[wasm_bindgen]
+pub fn run_render() -> Result<(), JsValue> {
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
