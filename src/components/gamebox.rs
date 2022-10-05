@@ -10,6 +10,7 @@ use yew::prelude::*;
 use crate::functions::random;
 use crate::minos::shapes::{MinoShape, I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
+use crate::types::bag::BagType;
 use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
@@ -20,9 +21,9 @@ pub enum Msg {
 }
 
 pub struct Model {
-    column_count: u8, //테트리스 열 개수(가로 길이)
-    row_count: u8,    //테트리스 행 개수(세로 길이)
-    bag_mode: bool,   //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
+    column_count: u8,  //테트리스 열 개수(가로 길이)
+    row_count: u8,     //테트리스 행 개수(세로 길이)
+    bag_mode: BagType, //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
 
     mino_list: Vec<MinoShape>, //미노 리스트
 
@@ -31,13 +32,13 @@ pub struct Model {
 
 impl Model {
     pub fn new() -> Self {
-        Self::with_option(GameOption::build())
+        Self::with_option(Default::default())
     }
 
     pub fn with_option(option: GameOption) -> Self {
-        let column_count = option.column_count.unwrap_or(10);
-        let row_count = option.row_count.unwrap_or(20);
-        let bag_mode = option.bag_mode.unwrap_or(true);
+        let column_count = option.column_count;
+        let row_count = option.row_count;
+        let bag_mode = option.bag_mode;
         let tetris_board = TetrisBoard {
             cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
             column_count,
@@ -218,12 +219,15 @@ impl Model {
     fn fill_next_bag(&self) -> Option<()> {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
-        if self.bag_mode {
-            game_info.next_bag = random::shuffle(&self.mino_list).collect();
-        } else {
-            game_info.next_bag = (0..self.mino_list.len())
-                .map(|_| random::random_select(&self.mino_list))
-                .collect()
+        match self.bag_mode {
+            BagType::SevenBag => {
+                game_info.next_bag = random::shuffle(&self.mino_list).collect();
+            }
+            BagType::NoBag => {
+                game_info.next_bag = (0..self.mino_list.len())
+                    .map(|_| random::random_select(&self.mino_list))
+                    .collect()
+            }
         }
 
         Some(())
