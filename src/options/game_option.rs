@@ -1,30 +1,21 @@
+use crate::types::bag::BagType;
+
 pub struct GameOption {
-    pub column_count: Option<u8>,
-    pub row_count: Option<u8>,
-    pub bag_mode: Option<bool>,
+    pub board_width: u32,
+    pub board_height: u32,
+    pub column_count: u8,
+    pub row_count: u8,
+    pub bag_mode: BagType,
 }
 
-impl GameOption {
-    pub fn build() -> Self {
+impl Default for GameOption {
+    fn default() -> Self {
         Self {
-            column_count: None,
-            row_count: None,
-            bag_mode: None,
+            column_count: 10,
+            row_count: 20,
+            bag_mode: BagType::SevenBag,
+            board_width: 300,
+            board_height: 600,
         }
-    }
-
-    pub fn column_count(mut self, column_count: u8) -> Self {
-        self.column_count = Some(column_count);
-        self
-    }
-
-    pub fn row_count(mut self, row_count: u8) -> Self {
-        self.row_count = Some(row_count);
-        self
-    }
-
-    pub fn bag_mode(mut self, bag_mode: bool) -> Self {
-        self.bag_mode = Some(bag_mode);
-        self
     }
 }

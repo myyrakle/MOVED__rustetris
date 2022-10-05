@@ -7,21 +7,23 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
-use crate::functions::{random, render};
+use crate::functions::random;
 use crate::minos::shapes::{MinoShape, I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
+use crate::types::bag::BagType;
 use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
+use crate::wasm_bind;
 
 pub enum Msg {
     GameStart,
 }
 
 pub struct Model {
-    column_count: u8, //테트리스 열 개수(가로 길이)
-    row_count: u8,    //테트리스 행 개수(세로 길이)
-    bag_mode: bool,   //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
+    column_count: u8,  //테트리스 열 개수(가로 길이)
+    row_count: u8,     //테트리스 행 개수(세로 길이)
+    bag_mode: BagType, //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
 
     mino_list: Vec<MinoShape>, //미노 리스트
 
@@ -30,17 +32,21 @@ pub struct Model {
 
 impl Model {
     pub fn new() -> Self {
-        Self::with_option(GameOption::build())
+        Self::with_option(Default::default())
     }
 
     pub fn with_option(option: GameOption) -> Self {
-        let column_count = option.column_count.unwrap_or(10);
-        let row_count = option.row_count.unwrap_or(20);
-        let bag_mode = option.bag_mode.unwrap_or(true);
+        let column_count = option.column_count;
+        let row_count = option.row_count;
+        let board_height = option.board_height;
+        let board_width = option.board_width;
+        let bag_mode = option.bag_mode;
         let tetris_board = TetrisBoard {
             cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
             column_count,
             row_count,
+            board_height,
+            board_width,
         };
 
         let mino_list = vec![I, L, J, S, Z, O, T];
@@ -85,13 +91,15 @@ impl Model {
             let tick_interval = game_info.lock().ok().unwrap().tick_interval;
 
             let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
-                log::info!("TICK");
+                //log::info!("TICK");
 
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
-                    render::render(
+                    wasm_bind::render(
                         game_info.tetris_board.unfold(),
+                        game_info.tetris_board.board_width,
+                        game_info.tetris_board.board_height,
                         game_info.tetris_board.column_count,
                         game_info.tetris_board.row_count,
                     );
@@ -114,13 +122,15 @@ impl Model {
             let render_interval = game_info.lock().ok().unwrap().render_interval;
 
             let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
-                log::info!("RENDER");
+                //log::info!("RENDER");
 
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
-                    render::render(
+                    wasm_bind::render(
                         game_info.tetris_board.unfold(),
+                        game_info.tetris_board.board_width,
+                        game_info.tetris_board.board_height,
                         game_info.tetris_board.column_count,
                         game_info.tetris_board.row_count,
                     );
@@ -163,6 +173,8 @@ impl Model {
             ],
             row_count: self.row_count,
             column_count: self.column_count,
+            board_height: game_info.tetris_board.board_height,
+            board_width: game_info.tetris_board.board_width,
         };
 
         Some(())
@@ -217,12 +229,15 @@ impl Model {
     fn fill_next_bag(&self) -> Option<()> {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
-        if self.bag_mode {
-            game_info.next_bag = random::shuffle(&self.mino_list).collect();
-        } else {
-            game_info.next_bag = (0..self.mino_list.len())
-                .map(|_| random::random_select(&self.mino_list))
-                .collect()
+        match self.bag_mode {
+            BagType::SevenBag => {
+                game_info.next_bag = random::shuffle(&self.mino_list).collect();
+            }
+            BagType::NoBag => {
+                game_info.next_bag = (0..self.mino_list.len())
+                    .map(|_| random::random_select(&self.mino_list))
+                    .collect()
+            }
         }
 
         Some(())
