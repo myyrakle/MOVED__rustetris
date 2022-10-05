@@ -3,6 +3,7 @@ pub mod functions;
 pub mod minos;
 pub mod options;
 pub mod types;
+pub mod wasm_bindgen;
 
 fn main() {
     wasm_logger::init(wasm_logger::Config::default());

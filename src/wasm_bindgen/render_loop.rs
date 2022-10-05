@@ -1,35 +1,13 @@
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+
 use std::f64;
-use wasm_bindgen::prelude::*;
+use std::sync::Mutex;
 use wasm_bindgen::JsCast;
-use web_sys::CanvasRenderingContext2d;
 
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
 
-#[wasm_bindgen]
-pub fn draw_block(
-    context: CanvasRenderingContext2d,
-    x: f64,
-    y: f64,
-    block_width_size: f64,
-    block_height_size: f64,
-    color: &str,
-) {
-    context.set_stroke_style(&JsValue::from_str("black")); // 테두리 색상
-    context.set_fill_style(&JsValue::from_str(color)); // 내부 색상
-    context.fill_rect(
-        block_width_size * x,
-        block_height_size * y,
-        block_width_size - 1.0,
-        block_height_size - 1.0,
-    );
-    context.stroke_rect(
-        block_width_size * x,
-        block_height_size * y,
-        block_width_size - 1.0,
-        block_height_size - 1.0,
-    );
-}
+use super::draw::draw_block;
 
 static BOARD_HEIGHT_SIZE: f64 = 600_f64;
 static BOARD_WIDTH_SIZE: f64 = 300_f64;
@@ -103,4 +81,47 @@ pub fn render(board_unfolded: Vec<i32>, board_width: u8, board_height: u8) {
     //     context.fillRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
     //     context.strokeRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
     // }
+}
+
+#[wasm_bindgen(start)]
+pub fn run(foo: Arc<Mutex<i32>>) -> Result<(), JsValue> {
+    // Here we want to call `requestAnimationFrame` in a loop, but only a fixed
+    // number of times. After it's done we want all our resources cleaned up. To
+    // achieve this we're using an `Rc`. The `Rc` will eventually store the
+    // closure we want to execute on each frame, but to start out it contains
+    // `None`.
+    //
+    // After the `Rc` is made we'll actually create the closure, and the closure
+    // will reference one of the `Rc` instances. The other `Rc` reference is
+    // used to store the closure, request the first frame, and then is dropped
+    // by this function.
+    //
+    // Inside the closure we've got a persistent `Rc` reference, which we use
+    // for all future iterations of the loop
+    let f = Rc::new(RefCell::new(None));
+    let g = f.clone();
+
+    let mut i = 0;
+    *g.borrow_mut() = Some(Closure::new(move || {
+        if i > 300 {
+            body().set_text_content(Some("All done!"));
+
+            // Drop our handle to this closure so that it will get cleaned
+            // up once we return.
+            let _ = f.borrow_mut().take();
+            return;
+        }
+
+        // Set the body's text content to how many times this
+        // requestAnimationFrame callback has fired.
+        i += 1;
+        let text = format!("requestAnimationFrame has been called {} times.", i);
+        body().set_text_content(Some(&text));
+
+        // Schedule ourself for another requestAnimationFrame callback.
+        request_animation_frame(f.borrow().as_ref().unwrap());
+    }));
+
+    request_animation_frame(g.borrow().as_ref().unwrap());
+    Ok(())
 }
