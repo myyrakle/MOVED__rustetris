@@ -94,8 +94,11 @@ impl Model {
 
                 let current_mino = game_info.current_mino;
 
-                let current_mino = match current_mino {
-                    Some(current_mino) => current_mino,
+                match current_mino {
+                    Some(current_mino) => {
+                        current_mino;
+                        ()
+                    }
                     None => {
                         let mino = game_info.get_mino();
                         game_info.current_mino = Some(mino);
@@ -105,13 +108,15 @@ impl Model {
 
                         if !valid_mino(&game_info.tetris_board, &mino, point) {
                             // 패배 처리
+                            log::error!("에러");
                             game_info.on_play = false;
                             game_info.lose = true;
+                        } else {
+                            log::error!("성공 {:?}", mino);
+                            game_info.tetris_board.spawn_mino(mino, point);
                         }
-
-                        mino
                     }
-                };
+                }
 
                 ()
             });

@@ -3,6 +3,7 @@ use crate::minos::shapes::MinoShape;
 use super::{point::Point, tetris_cell::TetrisCell};
 use itertools::Itertools;
 
+#[derive(Debug)]
 pub struct TetrisBoard {
     pub column_count: u8, //테트리스 열 개수(가로 길이)
     pub row_count: u8,    //테트리스 행 개수(세로 길이)

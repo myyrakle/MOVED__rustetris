@@ -6,6 +6,7 @@ use crate::{minos::shapes::MinoShape, util::random};
 
 use super::{bag::BagType, point::Point, tetris_board::TetrisBoard};
 
+#[derive(Debug)]
 pub struct GameInfo {
     pub game_score: u64, //게임 점수
 
