@@ -1,6 +1,11 @@
-use super::tetris_cell::TetrisCell;
+#![allow(clippy::explicit_counter_loop)]
+
+use crate::minos::shapes::MinoShape;
+
+use super::{point::Point, tetris_cell::TetrisCell};
 use itertools::Itertools;
 
+#[derive(Debug)]
 pub struct TetrisBoard {
     pub column_count: u8, //테트리스 열 개수(가로 길이)
     pub row_count: u8,    //테트리스 행 개수(세로 길이)
@@ -38,6 +43,39 @@ impl TetrisBoard {
                 .into_iter()
                 .map(|chunk| chunk.collect::<Vec<TetrisCell>>())
                 .collect(),
+        }
+    }
+
+    pub fn spawn_mino(&mut self, mino: MinoShape, position: Point) {
+        let x = position.x as usize;
+        let y = position.y as usize;
+
+        let mut mino_x = 0;
+
+        let mino_row_count = mino.len();
+        let mino_column_count = mino[0].len();
+
+        for x in x..(x + mino_column_count) {
+            let mut mino_y = 0;
+
+            for y in y..(y + mino_row_count) {
+                let y = y as usize;
+                let x = x as usize;
+
+                if let TetrisCell::Empty = self.cells[y][x] {
+                    // No Conflict
+                    self.cells[y][x] = mino[mino_y][mino_x];
+                } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
+                    // No Conflict
+                } else {
+                    // Conflict
+                    panic!("block conflict");
+                }
+
+                mino_y += 1;
+            }
+
+            mino_x += 1;
         }
     }
 }

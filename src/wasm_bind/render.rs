@@ -8,7 +8,6 @@ use wasm_bindgen::JsCast;
 
 use crate::js_bind::body::body;
 use crate::js_bind::request_animation_frame::request_animation_frame;
-use crate::types::game_info::GameInfo;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
 

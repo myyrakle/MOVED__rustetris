@@ -1,5 +1,4 @@
 use std::collections::VecDeque;
-use std::error::Error;
 use std::sync::{Arc, Mutex};
 
 use futures_util::stream::StreamExt;
@@ -7,13 +6,13 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
-use crate::functions::random;
-use crate::minos::shapes::{MinoShape, I, J, L, O, S, T, Z};
+use crate::minos::shapes::{I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
-use crate::types::bag::BagType;
 use crate::types::game_info::GameInfo;
+use crate::types::point::Point;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
+use crate::util::valid_mino::valid_mino;
 use crate::wasm_bind;
 
 pub enum Msg {
@@ -21,13 +20,13 @@ pub enum Msg {
 }
 
 pub struct Model {
-    column_count: u8,  //테트리스 열 개수(가로 길이)
-    row_count: u8,     //테트리스 행 개수(세로 길이)
-    bag_mode: BagType, //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
-
-    mino_list: Vec<MinoShape>, //미노 리스트
-
     game_info: Arc<Mutex<GameInfo>>,
+}
+
+impl Default for Model {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Model {
@@ -55,7 +54,7 @@ impl Model {
             game_score: 0,
             render_interval: 100,
             tick_interval: 1000,
-            current_position: None,
+            current_position: Default::default(),
             current_mino: None,
             freezed: false,
             current_bag: VecDeque::new(),
@@ -65,13 +64,11 @@ impl Model {
             lose: false,
             tick_interval_handler: None,
             render_interval_handler: None,
+            bag_mode,
+            mino_list,
         };
 
         Self {
-            column_count,
-            row_count,
-            bag_mode,
-            mino_list,
             game_info: Arc::new(Mutex::new(game_info)),
         }
     }
@@ -93,18 +90,29 @@ impl Model {
             let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
                 //log::info!("TICK");
 
-                let game_info = game_info.lock().unwrap();
+                let mut game_info = game_info.lock().unwrap();
 
-                if game_info.on_play {
-                    wasm_bind::render(
-                        game_info.tetris_board.unfold(),
-                        game_info.tetris_board.board_width,
-                        game_info.tetris_board.board_height,
-                        game_info.tetris_board.column_count,
-                        game_info.tetris_board.row_count,
-                    );
-                } else {
-                    // NONE
+                let current_mino = game_info.current_mino;
+
+                match current_mino {
+                    Some(_current_mino) => {
+                        //current_mino;
+                    }
+                    None => {
+                        let mino = game_info.get_mino();
+                        game_info.current_mino = Some(mino);
+
+                        let point = Point::start_point(game_info.tetris_board.column_count);
+                        game_info.current_position = point;
+
+                        if !valid_mino(&game_info.tetris_board, &mino, point) {
+                            // 패배 처리
+                            game_info.on_play = false;
+                            game_info.lose = true;
+                        } else {
+                            game_info.tetris_board.spawn_mino(mino, point);
+                        }
+                    }
                 }
             });
 
@@ -166,13 +174,13 @@ impl Model {
     // 보드 초기화
     pub fn init_board(&self) -> Option<()> {
         let mut game_info = self.game_info.lock().ok().unwrap();
+        let column_count = game_info.tetris_board.column_count;
+        let row_count = game_info.tetris_board.row_count;
+
         game_info.tetris_board = TetrisBoard {
-            cells: vec![
-                vec![TetrisCell::Empty; self.column_count as usize];
-                self.row_count as usize
-            ],
-            row_count: self.row_count,
-            column_count: self.column_count,
+            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
+            row_count,
+            column_count,
             board_height: game_info.tetris_board.board_height,
             board_width: game_info.tetris_board.board_width,
         };
@@ -195,50 +203,6 @@ impl Model {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
         game_info.game_score = 0;
-
-        Some(())
-    }
-
-    // 가방에서 미노를 새로 가져옴.
-    pub fn get_mino(&self) -> Result<MinoShape, Box<dyn Error>> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-
-        // 현재 가방이 비어있다면
-        if game_info.current_bag.is_empty() {
-            self.fill_current_bag();
-        }
-
-        Ok(game_info.current_bag.pop_front().unwrap())
-    }
-
-    // 현재 가방 채움
-    fn fill_current_bag(&self) -> Option<()> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-
-        if game_info.next_bag.is_empty() {
-            self.fill_next_bag()?;
-        }
-
-        game_info.current_bag = game_info.next_bag.clone();
-        self.fill_next_bag()?;
-
-        Some(())
-    }
-
-    // 다음 가방 채움
-    fn fill_next_bag(&self) -> Option<()> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-
-        match self.bag_mode {
-            BagType::SevenBag => {
-                game_info.next_bag = random::shuffle(&self.mino_list).collect();
-            }
-            BagType::NoBag => {
-                game_info.next_bag = (0..self.mino_list.len())
-                    .map(|_| random::random_select(&self.mino_list))
-                    .collect()
-            }
-        }
 
         Some(())
     }
