@@ -53,10 +53,10 @@ impl TetrisBoard {
         let mino_row_count = mino.len();
         let mino_column_count = mino[0].len();
 
-        for x in x..(mino_column_count) {
+        for x in x..(x + mino_column_count) {
             let mut mino_y = 0;
 
-            for y in y..(mino_row_count) {
+            for y in y..(y + mino_row_count) {
                 let y = y as usize;
                 let x = x as usize;
 

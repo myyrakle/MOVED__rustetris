@@ -12,7 +12,7 @@ use crate::types::game_info::GameInfo;
 use crate::types::point::Point;
 use crate::types::tetris_board::TetrisBoard;
 use crate::types::tetris_cell::TetrisCell;
-use crate::util::valid_mino::{self, valid_mino};
+use crate::util::valid_mino::valid_mino;
 use crate::wasm_bind;
 
 pub enum Msg {
@@ -108,11 +108,9 @@ impl Model {
 
                         if !valid_mino(&game_info.tetris_board, &mino, point) {
                             // 패배 처리
-                            log::error!("에러");
                             game_info.on_play = false;
                             game_info.lose = true;
                         } else {
-                            log::error!("성공 {:?}", mino);
                             game_info.tetris_board.spawn_mino(mino, point);
                         }
                     }
