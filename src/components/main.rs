@@ -18,9 +18,9 @@ struct Foo {
 
 impl yew::scheduler::Runnable for Foo {
     fn run(self: Box<Self>) {
-        let mut foo = self.foo.lock().unwrap();
+        let mut _foo = self.foo.lock().unwrap();
 
-        *foo += 1;
+        //*foo += 1;
     }
 }
 

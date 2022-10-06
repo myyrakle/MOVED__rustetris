@@ -97,7 +97,6 @@ impl Model {
                 match current_mino {
                     Some(_current_mino) => {
                         //current_mino;
-                        ()
                     }
                     None => {
                         let mino = game_info.get_mino();
@@ -115,8 +114,6 @@ impl Model {
                         }
                     }
                 }
-
-                ()
             });
 
             loop {

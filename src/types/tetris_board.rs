@@ -1,3 +1,5 @@
+#![allow(clippy::explicit_counter_loop)]
+
 use crate::minos::shapes::MinoShape;
 
 use super::{point::Point, tetris_cell::TetrisCell};
@@ -63,13 +65,11 @@ impl TetrisBoard {
                 if let TetrisCell::Empty = self.cells[y][x] {
                     // No Conflict
                     self.cells[y][x] = mino[mino_y][mino_x];
+                } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
+                    // No Conflict
                 } else {
-                    if let TetrisCell::Empty = mino[mino_y][mino_x] {
-                        // No Conflict
-                    } else {
-                        // Conflict
-                        panic!("block conflict");
-                    }
+                    // Conflict
+                    panic!("block conflict");
                 }
 
                 mino_y += 1;
