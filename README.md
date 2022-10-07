@@ -4,9 +4,10 @@ Yew.rs, Canvas로 구현된 웹 테트리스
 
 ## 실행법
 
-trunk가 없다면 설치
+기본설정
 
 ```
+rustup target add wasm32-unknown-unknown
 cargo install trunk
 ```
 

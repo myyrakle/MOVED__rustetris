@@ -95,8 +95,23 @@ impl Model {
                 let current_mino = game_info.current_mino;
 
                 match current_mino {
-                    Some(_current_mino) => {
+                    Some(current_mino) => {
                         //current_mino;
+                        let current_position = game_info.current_position;
+                        let next_position =
+                            current_position.set_y(game_info.current_position.y + 1);
+
+                        if !valid_mino(&game_info.tetris_board, &current_mino, next_position) {
+                            // 블럭 고정 후 현재 미노에서 제거
+                            game_info
+                                .tetris_board
+                                .write_current_mino(current_mino, current_position);
+                            game_info.current_mino = None;
+                        } else {
+                            game_info.current_position = next_position;
+                        }
+
+                        // 줄 지우기
                     }
                     None => {
                         let mino = game_info.get_mino();
@@ -110,7 +125,6 @@ impl Model {
                             game_info.on_play = false;
                             game_info.lose = true;
                         } else {
-                            game_info.tetris_board.spawn_mino(mino, point);
                         }
                     }
                 }
@@ -134,9 +148,19 @@ impl Model {
 
                 let game_info = game_info.lock().unwrap();
 
+                let tetris_board = match game_info.current_mino {
+                    Some(current_mino) => {
+                        let mut tetris_board = game_info.tetris_board.clone();
+                        tetris_board.write_current_mino(current_mino, game_info.current_position);
+
+                        tetris_board
+                    }
+                    None => game_info.tetris_board.clone(),
+                };
+
                 if game_info.on_play {
                     wasm_bind::render(
-                        game_info.tetris_board.unfold(),
+                        tetris_board.unfold(),
                         game_info.tetris_board.board_width,
                         game_info.tetris_board.board_height,
                         game_info.tetris_board.column_count,
