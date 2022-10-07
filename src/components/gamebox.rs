@@ -111,7 +111,7 @@ impl Model {
                             game_info.current_position = next_position;
                         }
 
-                        // 줄 지우기
+                        // TODO: 줄 지우기
                     }
                     None => {
                         let mino = game_info.get_mino();
