@@ -62,6 +62,11 @@ impl TetrisBoard {
                 let y = y as usize;
                 let x = x as usize;
 
+                // index out of range 방지
+                if y > self.column_count as usize || x > self.row_count as usize {
+                    break;
+                }
+
                 if let TetrisCell::Empty = self.cells[y][x] {
                     // No Conflict
                     self.cells[y][x] = mino[mino_y][mino_x];
