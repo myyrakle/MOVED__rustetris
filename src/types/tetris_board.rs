@@ -62,19 +62,21 @@ impl TetrisBoard {
                 let y = y as usize;
                 let x = x as usize;
 
-                // index out of range 방지
-                if y > self.column_count as usize || x > self.row_count as usize {
-                    break;
-                }
+                let cell = self.cells.get(y).map(|e| e.get(x)).flatten();
 
-                if let TetrisCell::Empty = self.cells[y][x] {
-                    // No Conflict
-                    self.cells[y][x] = mino[mino_y][mino_x];
-                } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
-                    // No Conflict
-                } else {
-                    // Conflict
-                    panic!("block conflict");
+                match cell {
+                    Some(cell) => {
+                        if let TetrisCell::Empty = cell {
+                            // No Conflict
+                            self.cells[y][x] = mino[mino_y][mino_x];
+                        } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
+                            // No Conflict
+                        } else {
+                            // Conflict
+                            panic!("block conflict");
+                        }
+                    }
+                    None => {}
                 }
 
                 mino_y += 1;
