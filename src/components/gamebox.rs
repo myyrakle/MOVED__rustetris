@@ -1,11 +1,13 @@
+use std::sync::Arc;
+
 use yew::prelude::*;
 
-use crate::game::{event::Event, manager::GameManager};
+use crate::game::manager::GameManager;
 
 #[function_component(GameBox)]
 pub fn game_box() -> Html {
     let game_manager = GameManager::new();
-    let event_sender = game_manager.get_event_sender();
+    let game_info = Arc::clone(&game_manager.game_info);
 
     let onclick = move |_| {
         if !game_manager.on_play() {
@@ -16,31 +18,33 @@ pub fn game_box() -> Html {
     };
 
     let onkeydown = Callback::from(move |event: KeyboardEvent| {
+        let mut game_info = game_info.lock().unwrap();
+
         match event.key_code() {
             37 => {
-                event_sender.send(Event::LeftMove).unwrap();
+                game_info.left_move();
             } // left move
             39 => {
-                event_sender.send(Event::RightMove).unwrap();
+                game_info.right_move();
             } // right move
             38 => {} // up move
             40 => {
-                event_sender.send(Event::SoftDrop).unwrap();
+                game_info.soft_drop();
             } // down move
             90 => {
-                event_sender.send(Event::LeftRotate).unwrap();
+                game_info.left_rotate();
             } // z
             88 => {
-                event_sender.send(Event::RightRotate).unwrap();
+                game_info.right_rotate();
             } // x
             65 => {
-                event_sender.send(Event::DoubleRotate).unwrap();
+                game_info.double_rotate();
             } // a
             32 => {
-                event_sender.send(Event::HardDrop).unwrap();
+                game_info.hard_drop();
             } // spacebar
             16 => {
-                event_sender.send(Event::Hold).unwrap();
+                game_info.hold();
             } // shift
             _ => {}
         }

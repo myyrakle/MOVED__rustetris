@@ -110,8 +110,26 @@ impl GameInfo {
         }
     }
 
-    pub fn left_move(&mut self) {}
-    pub fn right_move(&mut self) {}
+    pub fn left_move(&mut self) {
+        if let Some(current_mino) = self.current_mino {
+            let next_position = self.current_position.clone().add_x(-1);
+
+            if valid_mino(&self.tetris_board, &current_mino, next_position) {
+                self.current_position = next_position;
+            }
+        }
+    }
+
+    pub fn right_move(&mut self) {
+        if let Some(current_mino) = self.current_mino {
+            let next_position = self.current_position.clone().add_x(1);
+
+            if valid_mino(&self.tetris_board, &current_mino, next_position) {
+                self.current_position = next_position;
+            }
+        }
+    }
+
     pub fn left_rotate(&mut self) {}
     pub fn right_rotate(&mut self) {}
     pub fn soft_drop(&mut self) {}

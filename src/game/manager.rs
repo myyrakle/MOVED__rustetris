@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use std::sync::{mpsc, Arc, Mutex};
+use std::sync::{Arc, Mutex};
 
 use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
@@ -12,11 +12,8 @@ use crate::minos::shapes::{I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
 
-use super::event::Event;
-
 pub struct GameManager {
-    game_info: Arc<Mutex<GameInfo>>,
-    event_sender: mpsc::Sender<Event>,
+    pub game_info: Arc<Mutex<GameInfo>>,
 }
 
 impl GameManager {
@@ -60,46 +57,7 @@ impl GameManager {
 
         let game_info = Arc::new(Mutex::new(game_info));
 
-        // 이벤트 스레드
-        let (event_sender, event_receiver) = mpsc::channel::<Event>();
-        let _game_info = Arc::clone(&game_info);
-        spawn_local(async move {
-            let game_info = _game_info;
-            while let Ok(event) = event_receiver.recv() {
-                let mut game_info = game_info.lock().unwrap();
-                match event {
-                    Event::LeftMove => {
-                        game_info.left_move();
-                    }
-                    Event::RightMove => {
-                        game_info.right_move();
-                    }
-                    Event::LeftRotate => {
-                        game_info.left_rotate();
-                    }
-                    Event::RightRotate => {
-                        game_info.right_rotate();
-                    }
-                    Event::SoftDrop => {
-                        game_info.soft_drop();
-                    }
-                    Event::HardDrop => {
-                        game_info.hard_drop();
-                    }
-                    Event::Hold => {
-                        game_info.hold();
-                    }
-                    Event::DoubleRotate => {
-                        game_info.double_rotate();
-                    }
-                }
-            }
-        });
-
-        Self {
-            game_info,
-            event_sender,
-        }
+        Self { game_info }
     }
 
     pub fn on_play(&self) -> bool {
@@ -176,10 +134,6 @@ impl GameManager {
         });
 
         Some(())
-    }
-
-    pub fn get_event_sender(&self) -> mpsc::Sender<Event> {
-        self.event_sender.clone()
     }
 
     pub fn end_game(&self) -> Option<()> {
