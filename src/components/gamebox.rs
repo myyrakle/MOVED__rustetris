@@ -1,10 +1,11 @@
 use yew::prelude::*;
 
-use crate::game::manager::GameManager;
+use crate::game::{event::Event, manager::GameManager};
 
 #[function_component(GameBox)]
 pub fn game_box() -> Html {
     let game_manager = GameManager::new();
+    let event_sender = game_manager.get_event_sender();
 
     let onclick = move |_| {
         if !game_manager.on_play() {
@@ -17,31 +18,29 @@ pub fn game_box() -> Html {
     let onkeydown = Callback::from(move |event: KeyboardEvent| {
         match event.key_code() {
             37 => {
-                log::info!("left")
+                event_sender.send(Event::LeftMove).unwrap();
             } // left move
             39 => {
-                log::info!("right")
+                event_sender.send(Event::RightMove).unwrap();
             } // right move
-            38 => {
-                log::info!("up")
-            } // up move
+            38 => {} // up move
             40 => {
-                log::info!("down")
+                event_sender.send(Event::SoftDrop).unwrap();
             } // down move
             90 => {
-                log::info!("z")
+                event_sender.send(Event::LeftRotate).unwrap();
             } // z
             88 => {
-                log::info!("x")
+                event_sender.send(Event::RightRotate).unwrap();
             } // x
             65 => {
-                log::info!("a")
+                event_sender.send(Event::DoubleRotate).unwrap();
             } // a
             32 => {
-                log::info!("space")
+                event_sender.send(Event::HardDrop).unwrap();
             } // spacebar
             16 => {
-                log::info!("shift")
+                event_sender.send(Event::Hold).unwrap();
             } // shift
             _ => {}
         }

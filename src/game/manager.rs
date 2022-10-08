@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use std::sync::{Arc, Mutex};
+use std::sync::{mpsc, Arc, Mutex};
 
 use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
@@ -14,8 +14,11 @@ use crate::options::game_option::GameOption;
 use crate::util::valid_mino::valid_mino;
 use crate::wasm_bind;
 
+use super::event::Event;
+
 pub struct GameManager {
     game_info: Arc<Mutex<GameInfo>>,
+    event_sender: mpsc::Sender<Event>,
 }
 
 impl GameManager {
@@ -57,8 +60,29 @@ impl GameManager {
             mino_list,
         };
 
+        let game_info = Arc::new(Mutex::new(game_info));
+
+        // 이벤트 스레드
+        let (event_sender, event_receiver) = mpsc::channel::<Event>();
+        let game_info = Arc::clone(&game_info);
+        spawn_local(async move {
+            while let Ok(event) = event_receiver.recv() {
+                match event {
+                    Event::LeftMove => {}
+                    Event::RightMove => {}
+                    Event::LeftRotate => {}
+                    Event::RightRotate => {}
+                    Event::SoftDrop => {}
+                    Event::HardDrop => {}
+                    Event::Hold => {}
+                    Event::DoubleRotate => {}
+                }
+            }
+        });
+
         Self {
-            game_info: Arc::new(Mutex::new(game_info)),
+            game_info,
+            event_sender,
         }
     }
 
@@ -171,6 +195,10 @@ impl GameManager {
         });
 
         Some(())
+    }
+
+    pub fn get_event_sender(&self) -> mpsc::Sender<Event> {
+        self.event_sender.clone()
     }
 
     pub fn end_game(&self) -> Option<()> {
