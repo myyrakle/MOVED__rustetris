@@ -1,8 +1,10 @@
 pub mod bag;
+pub mod clear_info;
 pub mod event;
 pub mod game_info;
 pub mod game_record;
 pub mod manager;
 pub mod point;
+pub mod spin_type;
 pub mod tetris_board;
 pub mod tetris_cell;

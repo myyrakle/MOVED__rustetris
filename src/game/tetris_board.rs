@@ -47,18 +47,18 @@ impl TetrisBoard {
     }
 
     pub fn write_current_mino(&mut self, mino: MinoShape, position: Point) {
-        let x = position.x as usize;
-        let y = position.y as usize;
+        let x = position.x;
+        let y = position.y;
 
         let mut mino_x = 0;
 
         let mino_row_count = mino.len();
         let mino_column_count = mino[0].len();
 
-        for x in x..(x + mino_column_count) {
+        for x in x..(x + mino_column_count as i64) {
             let mut mino_y = 0;
 
-            for y in y..(y + mino_row_count) {
+            for y in y..(y + mino_row_count as i64) {
                 let y = y as usize;
                 let x = x as usize;
 

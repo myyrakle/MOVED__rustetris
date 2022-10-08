@@ -3,11 +3,15 @@ use std::collections::VecDeque;
 use gloo_timers::callback::Interval;
 
 use crate::{
+    game::spin_type::SpinType,
     minos::shapes::MinoShape,
     util::{random, valid_mino::valid_mino},
 };
 
-use super::{bag::BagType, game_record::GameRecord, point::Point, tetris_board::TetrisBoard};
+use super::{
+    bag::BagType, clear_info::ClearInfo, game_record::GameRecord, point::Point,
+    tetris_board::TetrisBoard, tetris_cell::TetrisCell,
+};
 
 #[derive(Debug)]
 pub struct GameInfo {
@@ -73,7 +77,35 @@ impl GameInfo {
         Some(())
     }
 
-    fn fix_mino(&mut self) {}
+    fn clear_line(&mut self) -> ClearInfo {
+        let mut line = 0;
+        // 스핀 여부 반환
+        // 지운 줄 수 반환
+        for y in (0..self.tetris_board.row_count).into_iter() {
+            let row: &Vec<TetrisCell> = &self.tetris_board.cells[y as usize];
+
+            if row.iter().all(|e| e != &TetrisCell::Empty) {
+                log::error!("테스트");
+                line += 1;
+                for e in (0..=y).into_iter().rev() {
+                    if e == 0 {
+                        for cell in &mut self.tetris_board.cells[e as usize] {
+                            *cell = TetrisCell::Empty
+                        }
+                    } else {
+                        self.tetris_board.cells[e as usize] =
+                            self.tetris_board.cells[(e - 1) as usize].clone()
+                    }
+                }
+            }
+        }
+
+        ClearInfo {
+            line,
+            spin: SpinType::None,
+            is_perfect: false,
+        }
+    }
 
     pub fn tick(&mut self) {
         let current_mino = self.current_mino;
@@ -93,7 +125,7 @@ impl GameInfo {
                     self.current_position = next_position;
                 }
 
-                // TODO: 줄 지우기
+                self.clear_line();
             }
             None => {
                 let mino = self.get_mino();
