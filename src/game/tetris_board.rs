@@ -55,6 +55,7 @@ impl TetrisBoard {
         let mino_row_count = mino.len();
         let mino_column_count = mino[0].len();
 
+        log::error("{} {}", x, mino_column_count);
         for x in x..(x + mino_column_count) {
             let mut mino_y = 0;
 
