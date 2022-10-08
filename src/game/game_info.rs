@@ -73,6 +73,8 @@ impl GameInfo {
         Some(())
     }
 
+    fn fix_mino(&mut self) {}
+
     pub fn tick(&mut self) {
         let current_mino = self.current_mino;
 
@@ -132,7 +134,11 @@ impl GameInfo {
 
     pub fn left_rotate(&mut self) {}
     pub fn right_rotate(&mut self) {}
-    pub fn soft_drop(&mut self) {}
+
+    pub fn soft_drop(&mut self) {
+        self.tick();
+    }
+
     pub fn hard_drop(&mut self) {}
     pub fn hold(&mut self) {}
     pub fn double_rotate(&mut self) {}
