@@ -4,7 +4,6 @@ use std::sync::{Arc, Mutex};
 use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
-use yew::prelude::*;
 
 use crate::game::game_info::GameInfo;
 use crate::game::point::Point;
