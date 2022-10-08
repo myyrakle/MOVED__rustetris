@@ -6,12 +6,10 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::game::game_info::GameInfo;
-use crate::game::point::Point;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
 use crate::minos::shapes::{I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
-use crate::util::valid_mino::valid_mino;
 use crate::wasm_bind;
 
 use super::event::Event;
