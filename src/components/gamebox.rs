@@ -51,7 +51,7 @@ impl Model {
         let mino_list = vec![I, L, J, S, Z, O, T];
 
         let game_info = GameInfo {
-            game_score: 0,
+            record: Default::default(),
             render_interval: 100,
             tick_interval: 1000,
             current_position: Default::default(),
@@ -226,7 +226,7 @@ impl Model {
     pub fn init_score(&self) -> Option<()> {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
-        game_info.game_score = 0;
+        game_info.record = Default::default();
 
         Some(())
     }

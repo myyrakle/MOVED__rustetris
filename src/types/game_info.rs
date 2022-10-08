@@ -4,11 +4,11 @@ use gloo_timers::callback::Interval;
 
 use crate::{minos::shapes::MinoShape, util::random};
 
-use super::{bag::BagType, point::Point, tetris_board::TetrisBoard};
+use super::{bag::BagType, game_record::GameRecord, point::Point, tetris_board::TetrisBoard};
 
 #[derive(Debug)]
 pub struct GameInfo {
-    pub game_score: u64, //게임 점수
+    pub record: GameRecord,
 
     pub on_play: bool,                   //게임 진행중 여부
     pub current_position: Point,         //현재 미노 좌표
