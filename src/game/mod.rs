@@ -1,4 +1,5 @@
 pub mod bag;
+pub mod event;
 pub mod game_info;
 pub mod game_record;
 pub mod manager;
