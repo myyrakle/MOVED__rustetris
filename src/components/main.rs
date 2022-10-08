@@ -6,7 +6,7 @@ use yew::{function_component, html};
 pub fn main_component() -> Html {
     html! {
         <div>
-            <gamebox::Model/>
+            <gamebox::GameBox/>
         </div>
     }
 }
