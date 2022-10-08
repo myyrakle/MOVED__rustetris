@@ -109,4 +109,13 @@ impl GameInfo {
             }
         }
     }
+
+    pub fn left_move(&mut self) {}
+    pub fn right_move(&mut self) {}
+    pub fn left_rotate(&mut self) {}
+    pub fn right_rotate(&mut self) {}
+    pub fn soft_drop(&mut self) {}
+    pub fn hard_drop(&mut self) {}
+    pub fn hold(&mut self) {}
+    pub fn double_rotate(&mut self) {}
 }

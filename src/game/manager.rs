@@ -62,18 +62,36 @@ impl GameManager {
 
         // 이벤트 스레드
         let (event_sender, event_receiver) = mpsc::channel::<Event>();
-        let game_info = Arc::clone(&game_info);
+        let _game_info = Arc::clone(&game_info);
         spawn_local(async move {
+            let game_info = _game_info;
             while let Ok(event) = event_receiver.recv() {
+                let mut game_info = game_info.lock().unwrap();
                 match event {
-                    Event::LeftMove => {}
-                    Event::RightMove => {}
-                    Event::LeftRotate => {}
-                    Event::RightRotate => {}
-                    Event::SoftDrop => {}
-                    Event::HardDrop => {}
-                    Event::Hold => {}
-                    Event::DoubleRotate => {}
+                    Event::LeftMove => {
+                        game_info.left_move();
+                    }
+                    Event::RightMove => {
+                        game_info.right_move();
+                    }
+                    Event::LeftRotate => {
+                        game_info.left_rotate();
+                    }
+                    Event::RightRotate => {
+                        game_info.right_rotate();
+                    }
+                    Event::SoftDrop => {
+                        game_info.soft_drop();
+                    }
+                    Event::HardDrop => {
+                        game_info.hard_drop();
+                    }
+                    Event::Hold => {
+                        game_info.hold();
+                    }
+                    Event::DoubleRotate => {
+                        game_info.double_rotate();
+                    }
                 }
             }
         });
