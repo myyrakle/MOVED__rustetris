@@ -1,6 +1,6 @@
 use crate::{
+    game::{point::Point, tetris_board::TetrisBoard, tetris_cell::TetrisCell},
     minos::shapes::MinoShape,
-    types::{point::Point, tetris_board::TetrisBoard, tetris_cell::TetrisCell},
 };
 
 // 미노 충돌여부 검증

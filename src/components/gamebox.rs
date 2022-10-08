@@ -6,12 +6,12 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 
+use crate::game::game_info::GameInfo;
+use crate::game::point::Point;
+use crate::game::tetris_board::TetrisBoard;
+use crate::game::tetris_cell::TetrisCell;
 use crate::minos::shapes::{I, J, L, O, S, T, Z};
 use crate::options::game_option::GameOption;
-use crate::types::game_info::GameInfo;
-use crate::types::point::Point;
-use crate::types::tetris_board::TetrisBoard;
-use crate::types::tetris_cell::TetrisCell;
 use crate::util::valid_mino::valid_mino;
 use crate::wasm_bind;
 
@@ -292,5 +292,15 @@ impl Component for Model {
                 <button onclick={link.callback(|_| Msg::GameStart)}>{"Start"}</button>
             </span>
         }
+    }
+}
+
+#[function_component(GameBox)]
+pub fn game_box() -> Html {
+    html! {
+        <span {onkeydown}>
+            <canvas id="gamebox" width="300" height="600"></canvas>
+            <button onclick={link.callback(|_| Msg::GameStart)}>{"Start"}</button>
+        </span>
     }
 }

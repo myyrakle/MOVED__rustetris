@@ -1,4 +1,4 @@
-use crate::types::tetris_cell::TetrisCell;
+use crate::game::tetris_cell::TetrisCell;
 
 pub type MinoColor = TetrisCell;
 

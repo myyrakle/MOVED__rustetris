@@ -1,4 +1,4 @@
-use crate::types::tetris_cell::TetrisCell;
+use crate::game::tetris_cell::TetrisCell;
 
 use super::colors::{
     I_DEFAULT_COLOR, J_DEFAULT_COLOR, L_DEFAULT_COLOR, O_DEFAULT_COLOR, S_DEFAULT_COLOR,
