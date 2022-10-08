@@ -61,6 +61,8 @@ pub fn render(
             let y = y as usize;
 
             if tetris_board.cells[y][x] != TetrisCell::Empty {
+                let cell = tetris_board.cells[y][x];
+
                 let x = x as f64 * block_width_size;
                 let y = y as f64 * block_height_size;
                 draw_block(
@@ -69,7 +71,7 @@ pub fn render(
                     y,
                     block_width_size,
                     block_height_size,
-                    "green",
+                    cell.to_color(),
                 );
             } else {
                 let x = x as f64 * block_width_size;

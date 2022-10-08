@@ -7,6 +7,10 @@ use super::colors::{
 
 pub type MinoShape = [[TetrisCell; 4]; 4];
 
+// ■■■■
+// □□□□
+// □□□□
+// □□□□
 pub const I: MinoShape = [
     [
         I_DEFAULT_COLOR,
@@ -34,6 +38,10 @@ pub const I: MinoShape = [
     ],
 ];
 
+// ■■■□
+// ■□□□
+// □□□□
+// □□□□
 pub const L: MinoShape = [
     [
         L_DEFAULT_COLOR,
@@ -61,6 +69,10 @@ pub const L: MinoShape = [
     ],
 ];
 
+// ■■■□
+// □□■□
+// □□□□
+// □□□□
 pub const J: MinoShape = [
     [
         J_DEFAULT_COLOR,
@@ -88,6 +100,10 @@ pub const J: MinoShape = [
     ],
 ];
 
+// □■■□
+// □■■□
+// □□□□
+// □□□□
 pub const O: MinoShape = [
     [
         O_DEFAULT_COLOR,
@@ -115,11 +131,15 @@ pub const O: MinoShape = [
     ],
 ];
 
+// □■■□
+// ■■□□
+// □□□□
+// □□□□
 pub const S: MinoShape = [
     [
         TetrisCell::Empty,
         S_DEFAULT_COLOR,
-        TetrisCell::Purple,
+        S_DEFAULT_COLOR,
         TetrisCell::Empty,
     ],
     [
@@ -142,6 +162,10 @@ pub const S: MinoShape = [
     ],
 ];
 
+// ■■□□
+// □■■□
+// □□□□
+// □□□□
 pub const Z: MinoShape = [
     [
         Z_DEFAULT_COLOR,

@@ -5,7 +5,7 @@ use crate::minos::shapes::MinoShape;
 use super::{point::Point, tetris_cell::TetrisCell};
 use itertools::Itertools;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct TetrisBoard {
     pub column_count: u8, //테트리스 열 개수(가로 길이)
     pub row_count: u8,    //테트리스 행 개수(세로 길이)
@@ -46,7 +46,7 @@ impl TetrisBoard {
         }
     }
 
-    pub fn spawn_mino(&mut self, mino: MinoShape, position: Point) {
+    pub fn write_current_mino(&mut self, mino: MinoShape, position: Point) {
         let x = position.x as usize;
         let y = position.y as usize;
 
@@ -62,14 +62,21 @@ impl TetrisBoard {
                 let y = y as usize;
                 let x = x as usize;
 
-                if let TetrisCell::Empty = self.cells[y][x] {
-                    // No Conflict
-                    self.cells[y][x] = mino[mino_y][mino_x];
-                } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
-                    // No Conflict
-                } else {
-                    // Conflict
-                    panic!("block conflict");
+                let cell = self.cells.get(y).map(|e| e.get(x)).flatten();
+
+                match cell {
+                    Some(cell) => {
+                        if let TetrisCell::Empty = cell {
+                            // No Conflict
+                            self.cells[y][x] = mino[mino_y][mino_x];
+                        } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
+                            // No Conflict
+                        } else {
+                            // Conflict
+                            panic!("block conflict");
+                        }
+                    }
+                    None => {}
                 }
 
                 mino_y += 1;

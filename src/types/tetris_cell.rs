@@ -30,3 +30,19 @@ impl std::convert::TryFrom<i32> for TetrisCell {
         }
     }
 }
+
+impl TetrisCell {
+    pub fn to_color(&self) -> &str {
+        match self {
+            Self::Empty => "white",
+            Self::Red => "red",
+            Self::Green => "green",
+            Self::Blue => "blue",
+            Self::Purple => "purple",
+            Self::Cyan => "cyan",
+            Self::Orange => "orange",
+            Self::Yellow => "yellow",
+            _ => "while",
+        }
+    }
+}
