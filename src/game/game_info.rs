@@ -81,11 +81,11 @@ impl GameInfo {
         let mut line = 0;
         // 스핀 여부 반환
         // 지운 줄 수 반환
-        log::info!("{:?}", self.tetris_board);
-        for y in (0..self.tetris_board.column_count) {
+        for y in (0..self.tetris_board.row_count).into_iter() {
             let row: &Vec<TetrisCell> = &self.tetris_board.cells[y as usize];
 
             if row.iter().all(|e| e != &TetrisCell::Empty) {
+                log::error!("테스트");
                 line += 1;
                 for e in (0..=y).into_iter().rev() {
                     if e == 0 {
