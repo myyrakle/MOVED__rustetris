@@ -6,8 +6,8 @@ pub struct Point {
 
 impl Point {
     pub fn start_point(column_count: u8) -> Self {
-        let y = 0;
-        let x = column_count as i64 / 2 - 1;
+        let y = 0; // -2으로 바꿀 필요
+        let x = column_count as i64 / 2 - 2;
 
         Self { x, y }
     }
@@ -17,8 +17,18 @@ impl Point {
         self
     }
 
+    pub fn add_x(mut self, x: i64) -> Self {
+        self.x = self.x + x;
+        self
+    }
+
     pub fn set_y(mut self, y: i64) -> Self {
         self.y = y;
+        self
+    }
+
+    pub fn add_y(mut self, y: i64) -> Self {
+        self.y = self.y + y;
         self
     }
 }

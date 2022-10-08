@@ -6,10 +6,10 @@ use std::f64;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 
+use crate::game::tetris_board::TetrisBoard;
+use crate::game::tetris_cell::TetrisCell;
 use crate::js_bind::body::body;
 use crate::js_bind::request_animation_frame::request_animation_frame;
-use crate::types::tetris_board::TetrisBoard;
-use crate::types::tetris_cell::TetrisCell;
 
 use super::draw::draw_block;
 
