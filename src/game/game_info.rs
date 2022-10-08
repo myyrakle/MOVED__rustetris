@@ -2,7 +2,10 @@ use std::collections::VecDeque;
 
 use gloo_timers::callback::Interval;
 
-use crate::{minos::shapes::MinoShape, util::random};
+use crate::{
+    minos::shapes::MinoShape,
+    util::{random, valid_mino::valid_mino},
+};
 
 use super::{bag::BagType, game_record::GameRecord, point::Point, tetris_board::TetrisBoard};
 
@@ -68,5 +71,42 @@ impl GameInfo {
         }
 
         Some(())
+    }
+
+    pub fn tick(&mut self) {
+        let current_mino = self.current_mino;
+
+        match current_mino {
+            Some(current_mino) => {
+                //current_mino;
+                let current_position = self.current_position;
+                let next_position = current_position.set_y(self.current_position.y + 1);
+
+                if !valid_mino(&self.tetris_board, &current_mino, next_position) {
+                    // 블럭 고정 후 현재 미노에서 제거
+                    self.tetris_board
+                        .write_current_mino(current_mino, current_position);
+                    self.current_mino = None;
+                } else {
+                    self.current_position = next_position;
+                }
+
+                // TODO: 줄 지우기
+            }
+            None => {
+                let mino = self.get_mino();
+                self.current_mino = Some(mino);
+
+                let point = Point::start_point(self.tetris_board.column_count);
+                self.current_position = point;
+
+                if !valid_mino(&self.tetris_board, &mino, point) {
+                    // 패배 처리
+                    self.on_play = false;
+                    self.lose = true;
+                } else {
+                }
+            }
+        }
     }
 }
