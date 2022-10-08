@@ -106,15 +106,15 @@ pub const J: MinoShape = [
 // □□□□
 pub const O: MinoShape = [
     [
-        O_DEFAULT_COLOR,
-        O_DEFAULT_COLOR,
         TetrisCell::Empty,
+        O_DEFAULT_COLOR,
+        O_DEFAULT_COLOR,
         TetrisCell::Empty,
     ],
     [
-        O_DEFAULT_COLOR,
-        O_DEFAULT_COLOR,
         TetrisCell::Empty,
+        O_DEFAULT_COLOR,
+        O_DEFAULT_COLOR,
         TetrisCell::Empty,
     ],
     [
