@@ -7,7 +7,11 @@ pub fn game_box() -> Html {
     let game_manager = GameManager::new();
 
     let onclick = move |_| {
-        game_manager.start_game();
+        if !game_manager.on_play() {
+            game_manager.start_game();
+        } else {
+            log::info!("이미 시작함")
+        }
     };
 
     let onkeydown = Callback::from(move |event: KeyboardEvent| {
@@ -45,7 +49,7 @@ pub fn game_box() -> Html {
     });
 
     html! {
-        <span {onkeydown}>
+        <span tabindex="0" {onkeydown}>
             <canvas id="gamebox" width="300" height="600"></canvas>
             <button onclick={onclick}>{"Start"}</button>
         </span>

@@ -62,6 +62,10 @@ impl GameManager {
         }
     }
 
+    pub fn on_play(&self) -> bool {
+        self.game_info.lock().unwrap().on_play
+    }
+
     pub fn start_game(&self) -> Option<()> {
         self.init_game()?;
         self.game_info.lock().ok()?.on_play = true;
