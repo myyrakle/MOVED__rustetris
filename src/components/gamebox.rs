@@ -18,9 +18,11 @@ pub fn game_box() -> Html {
         Callback::from(move |_| {
             focus("gamebox");
 
-            if !game_manager.on_play() {
-                start_disabled.set(true);
-                game_manager.start_game();
+            if !game_manager.on_play()
+            /*Using different mutex objects "GameInfo" */
+            {
+                // start_disabled.set(true);
+                game_manager.start_game(); /*Using different mutex objects "GameInfo" */
             }
         })
     };
