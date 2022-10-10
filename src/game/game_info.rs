@@ -150,10 +150,15 @@ impl GameInfo {
     }
 
     pub fn left_move(&mut self) {
+        log::error!("???");
+
         if let Some(current_mino) = self.current_mino {
+            log::error!("???2");
+
             let next_position = self.current_position.clone().add_x(-1);
 
             if valid_mino(&self.tetris_board, &current_mino, next_position) {
+                log::error!("???3");
                 self.current_position = next_position;
             }
         }

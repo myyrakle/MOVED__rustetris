@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use yew::prelude::*;
 
-use crate::game::manager::GameManager;
+use crate::{game::manager::GameManager, js_bind::focus::focus};
 
 #[function_component(GameBox)]
 pub fn game_box() -> Html {
@@ -16,6 +16,8 @@ pub fn game_box() -> Html {
         let start_disabled = _start_disabled;
 
         Callback::from(move |_| {
+            focus("gamebox");
+
             if !game_manager.on_play() {
                 start_disabled.set(true);
                 game_manager.start_game();
@@ -54,7 +56,6 @@ pub fn game_box() -> Html {
             } // shift
             _ => {}
         }
-        // get the pressed key using web-sys out of the event
     });
 
     html! {
