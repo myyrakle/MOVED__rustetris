@@ -26,33 +26,31 @@ pub fn game_box() -> Html {
     };
 
     let onkeydown = Callback::from(move |event: KeyboardEvent| {
-        let mut game_info = game_info.lock().unwrap();
-
         match event.key_code() {
             37 => {
-                game_info.left_move();
+                game_info.lock().unwrap().left_move();
             } // left move
             39 => {
-                game_info.right_move();
+                game_info.lock().unwrap().right_move();
             } // right move
             38 => {} // up move
             40 => {
-                game_info.soft_drop();
+                game_info.lock().unwrap().soft_drop();
             } // down move
             90 => {
-                game_info.left_rotate();
+                game_info.lock().unwrap().left_rotate();
             } // z
             88 => {
-                game_info.right_rotate();
+                game_info.lock().unwrap().right_rotate();
             } // x
             65 => {
-                game_info.double_rotate();
+                game_info.lock().unwrap().double_rotate();
             } // a
             32 => {
-                game_info.hard_drop();
+                game_info.lock().unwrap().hard_drop();
             } // spacebar
             16 => {
-                game_info.hold();
+                game_info.lock().unwrap().hold();
             } // shift
             _ => {}
         }

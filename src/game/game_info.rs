@@ -127,11 +127,11 @@ impl GameInfo {
                 if !valid_mino(&self.tetris_board, &current_mino, next_position) {
                     // 블럭 고정 후 현재 미노에서 제거
                     self.fix_current_mino();
+                    self.clear_line();
                 } else {
+                    log::info!("tick");
                     self.current_position = next_position;
                 }
-
-                self.clear_line();
             }
             None => {
                 let mino = self.get_mino();
@@ -182,27 +182,27 @@ impl GameInfo {
     }
 
     pub fn hard_drop(&mut self) {
-        let current_mino = self.current_mino;
+        // let current_mino = self.current_mino;
 
-        match current_mino {
-            Some(current_mino) => {
-                let current_position = self.current_position;
-                let mut next_position = current_position.add_y(1);
-                loop {
-                    log::info!("pos: {:?}", next_position);
-                    if !valid_mino(&self.tetris_board, &current_mino, next_position) {
-                        break;
-                    } else {
-                        next_position = next_position.add_y(1);
-                    }
-                }
+        // match current_mino {
+        //     Some(current_mino) => {
+        //         let current_position = self.current_position;
+        //         let mut next_position = current_position.add_y(1);
+        //         loop {
+        //             log::info!("pos: {:?}", next_position);
+        //             if !valid_mino(&self.tetris_board, &current_mino, next_position) {
+        //                 break;
+        //             } else {
+        //                 next_position = next_position.add_y(1);
+        //             }
+        //         }
 
-                self.fix_current_mino();
+        //         self.fix_current_mino();
 
-                self.clear_line();
-            }
-            None => {}
-        }
+        //         self.clear_line();
+        //     }
+        //     None => {}
+        // }
     }
     pub fn hold(&mut self) {}
     pub fn double_rotate(&mut self) {}

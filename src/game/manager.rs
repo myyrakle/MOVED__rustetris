@@ -47,8 +47,8 @@ impl GameManager {
 
         let game_info = GameInfo {
             record: Default::default(),
-            render_interval: 100,
-            tick_interval: 1500,
+            render_interval: 200,
+            tick_interval: 2000,
             current_position: Default::default(),
             current_mino: None,
             freezed: false,
@@ -116,26 +116,25 @@ impl GameManager {
 
                 let game_info = game_info.lock().unwrap();
 
-                let tetris_board = match game_info.current_mino {
-                    Some(current_mino) => {
-                        let mut tetris_board = game_info.tetris_board.clone();
-                        tetris_board.write_current_mino(current_mino, game_info.current_position);
-
-                        tetris_board
-                    }
-                    None => game_info.tetris_board.clone(),
-                };
-
                 if game_info.on_play {
+                    let tetris_board = match game_info.current_mino {
+                        Some(current_mino) => {
+                            let mut tetris_board = game_info.tetris_board.clone();
+                            tetris_board
+                                .write_current_mino(current_mino, game_info.current_position);
+
+                            tetris_board
+                        }
+                        None => game_info.tetris_board.clone(),
+                    };
+
                     wasm_bind::render(
                         tetris_board.unfold(),
-                        game_info.tetris_board.board_width,
-                        game_info.tetris_board.board_height,
-                        game_info.tetris_board.column_count,
-                        game_info.tetris_board.row_count,
+                        tetris_board.board_width,
+                        tetris_board.board_height,
+                        tetris_board.column_count,
+                        tetris_board.row_count,
                     );
-                } else {
-                    // NONE
                 }
             });
 
