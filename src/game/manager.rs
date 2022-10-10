@@ -73,6 +73,10 @@ impl GameManager {
     }
 
     pub fn start_game(&self) -> Option<()> {
+        if self.on_play() {
+            return None;
+        }
+
         self.init_game()?;
         self.game_info.lock().ok()?.on_play = true;
         self.game_info.lock().ok()?.lose = false;

@@ -9,12 +9,18 @@ pub fn game_box() -> Html {
     let game_manager = GameManager::new();
     let game_info = Arc::clone(&game_manager.game_info);
 
-    let onclick = move |_| {
-        if !game_manager.on_play() {
-            game_manager.start_game();
-        } else {
-            log::info!("이미 시작함")
-        }
+    let start_disabled = use_state(|| false);
+
+    let _start_disabled = start_disabled.clone();
+    let onclick = {
+        let start_disabled = _start_disabled;
+
+        Callback::from(move |_| {
+            if !game_manager.on_play() {
+                start_disabled.set(true);
+                game_manager.start_game();
+            }
+        })
     };
 
     let onkeydown = Callback::from(move |event: KeyboardEvent| {
@@ -52,9 +58,9 @@ pub fn game_box() -> Html {
     });
 
     html! {
-        <span tabindex="0" {onkeydown}>
-            <canvas id="gamebox" width="300" height="600"></canvas>
-            <button onclick={onclick}>{"Start"}</button>
+        <span id="gamebox" tabindex="0" {onkeydown}>
+            <canvas id="game-canvas" width="300" height="600"></canvas>
+            <button onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
         </span>
     }
 }

@@ -33,7 +33,7 @@ pub fn render(
     );
 
     let document = web_sys::window().unwrap().document().unwrap();
-    let canvas = document.get_element_by_id("gamebox").unwrap();
+    let canvas = document.get_element_by_id("game-canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
         .dyn_into::<web_sys::HtmlCanvasElement>()
         .map_err(|_| ())

@@ -184,6 +184,7 @@ impl GameInfo {
                 let current_position = self.current_position;
                 let mut next_position = current_position.add_y(1);
                 loop {
+                    log::info!("pos: {:?}", next_position);
                     if !valid_mino(&self.tetris_board, &current_mino, next_position) {
                         break;
                     } else {
