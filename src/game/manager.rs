@@ -8,7 +8,7 @@ use wasm_bindgen_futures::spawn_local;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
-use crate::minos::shapes::{I, J, L, O, S, T, Z};
+use crate::minos::shapes::MinoShape;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
 
@@ -35,7 +35,15 @@ impl GameManager {
             board_width,
         };
 
-        let mino_list = vec![I, L, J, S, Z, O, T];
+        let mino_list = vec![
+            MinoShape::I,
+            MinoShape::L,
+            MinoShape::J,
+            MinoShape::S,
+            MinoShape::Z,
+            MinoShape::O,
+            MinoShape::T,
+        ];
 
         let game_info = GameInfo {
             record: Default::default(),

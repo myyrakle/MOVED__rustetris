@@ -52,6 +52,8 @@ impl TetrisBoard {
 
         let mut mino_x = 0;
 
+        let mino = mino.cells;
+
         let mino_row_count = mino.len();
         let mino_column_count = mino[0].len();
 
