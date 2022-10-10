@@ -112,7 +112,6 @@ impl GameInfo {
 
         match current_mino {
             Some(current_mino) => {
-                //current_mino;
                 let current_position = self.current_position;
                 let next_position = current_position.set_y(self.current_position.y + 1);
 
@@ -138,7 +137,6 @@ impl GameInfo {
                     // 패배 처리
                     self.on_play = false;
                     self.lose = true;
-                } else {
                 }
             }
         }
@@ -171,7 +169,30 @@ impl GameInfo {
         self.tick();
     }
 
-    pub fn hard_drop(&mut self) {}
+    pub fn hard_drop(&mut self) {
+        let current_mino = self.current_mino;
+
+        match current_mino {
+            Some(current_mino) => {
+                let current_position = self.current_position;
+                let mut next_position = current_position.set_y(self.current_position.y + 1);
+                loop {
+                    if !valid_mino(&self.tetris_board, &current_mino, next_position) {
+                        // 블럭 고정 후 현재 미노에서 제거
+                        self.tetris_board
+                            .write_current_mino(current_mino, current_position);
+                        self.current_mino = None;
+                        break;
+                    } else {
+                        next_position = next_position.set_y(self.current_position.y + 1);
+                    }
+                }
+
+                self.clear_line();
+            }
+            None => {}
+        }
+    }
     pub fn hold(&mut self) {}
     pub fn double_rotate(&mut self) {}
 }
