@@ -107,19 +107,26 @@ impl GameInfo {
         }
     }
 
+    fn fix_current_mino(&mut self) {
+        if let Some(current_mino) = self.current_mino {
+            // 블럭 고정 후 현재 미노에서 제거
+            self.tetris_board
+                .write_current_mino(current_mino, self.current_position);
+            self.current_mino = None;
+        }
+    }
+
     pub fn tick(&mut self) {
         let current_mino = self.current_mino;
 
         match current_mino {
             Some(current_mino) => {
                 let current_position = self.current_position;
-                let next_position = current_position.set_y(self.current_position.y + 1);
+                let next_position = current_position.add_y(1);
 
                 if !valid_mino(&self.tetris_board, &current_mino, next_position) {
                     // 블럭 고정 후 현재 미노에서 제거
-                    self.tetris_board
-                        .write_current_mino(current_mino, current_position);
-                    self.current_mino = None;
+                    self.fix_current_mino();
                 } else {
                     self.current_position = next_position;
                 }
@@ -175,18 +182,16 @@ impl GameInfo {
         match current_mino {
             Some(current_mino) => {
                 let current_position = self.current_position;
-                let mut next_position = current_position.set_y(self.current_position.y + 1);
+                let mut next_position = current_position.add_y(1);
                 loop {
                     if !valid_mino(&self.tetris_board, &current_mino, next_position) {
-                        // 블럭 고정 후 현재 미노에서 제거
-                        self.tetris_board
-                            .write_current_mino(current_mino, current_position);
-                        self.current_mino = None;
                         break;
                     } else {
-                        next_position = next_position.set_y(self.current_position.y + 1);
+                        next_position = next_position.add_y(1);
                     }
                 }
+
+                self.fix_current_mino();
 
                 self.clear_line();
             }
