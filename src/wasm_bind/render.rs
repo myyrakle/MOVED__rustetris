@@ -14,6 +14,34 @@ use crate::js_bind::request_animation_frame::request_animation_frame;
 use super::draw::draw_block;
 
 #[wasm_bindgen]
+pub fn fill_rect(id: &str, color: &str) {
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvas = document.get_element_by_id(id).unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let width = canvas.width();
+    let height = canvas.height();
+
+    let context = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    context.begin_path();
+
+    // 흰색으로 세팅
+    context.set_fill_style(&JsValue::from_str(color));
+    context.fill_rect(0.0, 0.0, width as f64, height as f64);
+    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.stroke_rect(0.0, 0.0, width as f64, height as f64);
+}
+
+#[wasm_bindgen]
 pub fn render(
     board_unfolded: Vec<i32>,
     board_width: u32,
@@ -49,7 +77,7 @@ pub fn render(
     context.begin_path();
 
     // 흰색으로 세팅
-    context.set_fill_style(&JsValue::from_str("#FFFFFF"));
+    context.set_fill_style(&JsValue::from_str("#D3D3D3"));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
     context.set_stroke_style(&JsValue::from_str("#000000"));
     context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
@@ -82,7 +110,7 @@ pub fn render(
                     y,
                     block_width_size,
                     block_height_size,
-                    "#FFFFFF",
+                    "#D3D3D3",
                 );
             }
         }
