@@ -11,9 +11,9 @@ pub fn game_box() -> Html {
 
     let start_disabled = use_state(|| false);
 
-    let _start_disabled = start_disabled.clone();
+    //let _start_disabled = start_disabled.clone();
     let onclick = {
-        let start_disabled = _start_disabled;
+        //let start_disabled = _start_disabled;
 
         Callback::from(move |_| {
             focus("gamebox");
@@ -21,7 +21,7 @@ pub fn game_box() -> Html {
             if !game_manager.on_play()
             /*Using different mutex objects "GameInfo" */
             {
-                // start_disabled.set(true);
+                // start_disabled.set(true); // Enabling this causes problems.
                 game_manager.start_game(); /*Using different mutex objects "GameInfo" */
             }
         })

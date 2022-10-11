@@ -85,7 +85,6 @@ impl GameInfo {
             let row: &Vec<TetrisCell> = &self.tetris_board.cells[y as usize];
 
             if row.iter().all(|e| e != &TetrisCell::Empty) {
-                log::error!("테스트");
                 line += 1;
                 for e in (0..=y).into_iter().rev() {
                     if e == 0 {
@@ -129,7 +128,6 @@ impl GameInfo {
                     self.fix_current_mino();
                     self.clear_line();
                 } else {
-                    log::info!("tick");
                     self.current_position = next_position;
                 }
             }
@@ -150,15 +148,10 @@ impl GameInfo {
     }
 
     pub fn left_move(&mut self) {
-        log::error!("???");
-
         if let Some(current_mino) = self.current_mino {
-            log::error!("???2");
-
             let next_position = self.current_position.clone().add_x(-1);
 
             if valid_mino(&self.tetris_board, &current_mino, next_position) {
-                log::error!("???3");
                 self.current_position = next_position;
             }
         }
@@ -182,27 +175,29 @@ impl GameInfo {
     }
 
     pub fn hard_drop(&mut self) {
-        // let current_mino = self.current_mino;
+        let current_mino = self.current_mino;
 
-        // match current_mino {
-        //     Some(current_mino) => {
-        //         let current_position = self.current_position;
-        //         let mut next_position = current_position.add_y(1);
-        //         loop {
-        //             log::info!("pos: {:?}", next_position);
-        //             if !valid_mino(&self.tetris_board, &current_mino, next_position) {
-        //                 break;
-        //             } else {
-        //                 next_position = next_position.add_y(1);
-        //             }
-        //         }
+        match current_mino {
+            Some(current_mino) => {
+                let current_position = self.current_position;
+                let mut next_position = current_position.add_y(1);
+                loop {
+                    if !valid_mino(&self.tetris_board, &current_mino, next_position) {
+                        next_position = next_position.add_y(-1);
+                        break;
+                    } else {
+                        next_position = next_position.add_y(1);
+                    }
+                }
 
-        //         self.fix_current_mino();
+                self.current_position = next_position;
 
-        //         self.clear_line();
-        //     }
-        //     None => {}
-        // }
+                self.fix_current_mino();
+
+                self.clear_line();
+            }
+            None => {}
+        }
     }
     pub fn hold(&mut self) {}
     pub fn double_rotate(&mut self) {}
