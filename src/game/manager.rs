@@ -52,8 +52,8 @@ impl GameManager {
             current_position: Default::default(),
             current_mino: None,
             freezed: false,
-            current_bag: VecDeque::new(),
-            next_bag: VecDeque::new(),
+            next_count: 5,
+            bag: VecDeque::new(),
             tetris_board,
             on_play: false,
             lose: false,
@@ -128,7 +128,7 @@ impl GameManager {
                         None => game_info.tetris_board.clone(),
                     };
 
-                    wasm_bind::render(
+                    wasm_bind::render_board(
                         tetris_board.unfold(),
                         tetris_board.board_width,
                         tetris_board.board_height,
@@ -183,8 +183,7 @@ impl GameManager {
     pub fn init_bag(&self) -> Option<()> {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
-        game_info.current_bag = VecDeque::new();
-        game_info.next_bag = VecDeque::new();
+        game_info.bag = VecDeque::new();
 
         Some(())
     }
