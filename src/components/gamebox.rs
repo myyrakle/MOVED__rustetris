@@ -2,7 +2,9 @@ use std::sync::Arc;
 
 use yew::prelude::*;
 
-use crate::{game::manager::GameManager, js_bind::focus::focus};
+use crate::game::manager::GameManager;
+use crate::js_bind::focus::focus;
+use crate::wasm_bind::fill_rect;
 
 #[function_component(GameBox)]
 pub fn game_box() -> Html {
@@ -60,8 +62,13 @@ pub fn game_box() -> Html {
 
     html! {
         <span id="gamebox" tabindex="0" {onkeydown}>
-            <canvas id="game-canvas" width="300" height="600"></canvas>
-            <canvas id="next-canvas"></canvas>
+            <canvas id="game-canvas" width="300" height="600" onload={Callback::from(|_|
+            {
+                fill_rect("game-canvas", "D3D3D3");
+                log::info!("asdf");
+            }
+            )}></canvas>
+            <canvas id="next-canvas" width="100" height="500"></canvas>
             <button onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
         </span>
     }

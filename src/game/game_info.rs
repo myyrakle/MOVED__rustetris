@@ -190,6 +190,8 @@ impl GameInfo {
                 self.fix_current_mino();
 
                 self.clear_line();
+
+                self.tick();
             }
             None => {}
         }
