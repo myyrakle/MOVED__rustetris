@@ -5,6 +5,8 @@ use crate::{
 
 // 미노 충돌여부 검증
 pub fn valid_mino(board: &TetrisBoard, mino: &MinoShape, point: Point) -> bool {
+    let mino = mino.cells;
+
     let mino_row_count = mino.len();
     let mino_column_count = mino[0].len();
 

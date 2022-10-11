@@ -12,18 +12,8 @@ impl Point {
         Self { x, y }
     }
 
-    pub fn set_x(mut self, x: i64) -> Self {
-        self.x = x;
-        self
-    }
-
     pub fn add_x(mut self, x: i64) -> Self {
         self.x = self.x + x;
-        self
-    }
-
-    pub fn set_y(mut self, y: i64) -> Self {
-        self.y = y;
         self
     }
 

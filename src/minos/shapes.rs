@@ -5,217 +5,258 @@ use super::colors::{
     T_DEFAULT_COLOR, Z_DEFAULT_COLOR,
 };
 
-pub type MinoShape = [[TetrisCell; 4]; 4];
+#[derive(Debug, Clone, Copy)]
+pub enum Mino {
+    I,
+    J,
+    L,
+    O,
+    S,
+    T,
+    Z,
+    ETC,
+}
 
-// ■■■■
-// □□□□
-// □□□□
-// □□□□
-pub const I: MinoShape = [
-    [
-        I_DEFAULT_COLOR,
-        I_DEFAULT_COLOR,
-        I_DEFAULT_COLOR,
-        I_DEFAULT_COLOR,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+#[derive(Debug, Clone, Copy)]
+pub struct MinoShape {
+    pub mino: Mino,
+    pub cells: MinoShapeCells,
+}
 
-// ■■■□
-// ■□□□
-// □□□□
-// □□□□
-pub const L: MinoShape = [
-    [
-        L_DEFAULT_COLOR,
-        L_DEFAULT_COLOR,
-        L_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        L_DEFAULT_COLOR,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+pub type MinoShapeCells = [[TetrisCell; 4]; 4];
 
-// ■■■□
-// □□■□
-// □□□□
-// □□□□
-pub const J: MinoShape = [
-    [
-        J_DEFAULT_COLOR,
-        J_DEFAULT_COLOR,
-        J_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        J_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+impl MinoShape {
+    // ■■■■
+    // □□□□
+    // □□□□
+    // □□□□
+    pub const I: Self = Self {
+        mino: Mino::I,
+        cells: [
+            [
+                I_DEFAULT_COLOR,
+                I_DEFAULT_COLOR,
+                I_DEFAULT_COLOR,
+                I_DEFAULT_COLOR,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
 
-// □■■□
-// □■■□
-// □□□□
-// □□□□
-pub const O: MinoShape = [
-    [
-        TetrisCell::Empty,
-        O_DEFAULT_COLOR,
-        O_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        O_DEFAULT_COLOR,
-        O_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+    // ■■■□
+    // ■□□□
+    // □□□□
+    // □□□□
+    pub const L: Self = Self {
+        mino: Mino::L,
+        cells: [
+            [
+                L_DEFAULT_COLOR,
+                L_DEFAULT_COLOR,
+                L_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                L_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
 
-// □■■□
-// ■■□□
-// □□□□
-// □□□□
-pub const S: MinoShape = [
-    [
-        TetrisCell::Empty,
-        S_DEFAULT_COLOR,
-        S_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        S_DEFAULT_COLOR,
-        S_DEFAULT_COLOR,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+    // ■■■□
+    // □□■□
+    // □□□□
+    // □□□□
+    pub const J: MinoShape = Self {
+        mino: Mino::J,
+        cells: [
+            [
+                J_DEFAULT_COLOR,
+                J_DEFAULT_COLOR,
+                J_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                J_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
 
-// ■■□□
-// □■■□
-// □□□□
-// □□□□
-pub const Z: MinoShape = [
-    [
-        Z_DEFAULT_COLOR,
-        Z_DEFAULT_COLOR,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        Z_DEFAULT_COLOR,
-        Z_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+    // □■■□
+    // □■■□
+    // □□□□
+    // □□□□
+    pub const O: Self = Self {
+        mino: Mino::O,
+        cells: [
+            [
+                TetrisCell::Empty,
+                O_DEFAULT_COLOR,
+                O_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                O_DEFAULT_COLOR,
+                O_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
 
-pub const T: MinoShape = [
-    [
-        TetrisCell::Empty,
-        T_DEFAULT_COLOR,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        T_DEFAULT_COLOR,
-        T_DEFAULT_COLOR,
-        T_DEFAULT_COLOR,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-    [
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-        TetrisCell::Empty,
-    ],
-];
+    // □■■□
+    // ■■□□
+    // □□□□
+    // □□□□
+    pub const S: Self = Self {
+        mino: Mino::S,
+        cells: [
+            [
+                TetrisCell::Empty,
+                S_DEFAULT_COLOR,
+                S_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                S_DEFAULT_COLOR,
+                S_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
+
+    // ■■□□
+    // □■■□
+    // □□□□
+    // □□□□
+    pub const Z: Self = Self {
+        mino: Mino::Z,
+        cells: [
+            [
+                Z_DEFAULT_COLOR,
+                Z_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                Z_DEFAULT_COLOR,
+                Z_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
+
+    pub const T: Self = Self {
+        mino: Mino::T,
+        cells: [
+            [
+                TetrisCell::Empty,
+                T_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                T_DEFAULT_COLOR,
+                T_DEFAULT_COLOR,
+                T_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
+}
