@@ -2,16 +2,11 @@ use std::collections::VecDeque;
 
 use gloo_timers::callback::Interval;
 
-use crate::{
-    game::spin_type::SpinType,
-    minos::shapes::MinoShape,
-    util::{random, valid_mino::valid_mino},
+use crate::game::{
+    valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use super::{
-    bag::BagType, clear_info::ClearInfo, game_record::GameRecord, point::Point,
-    tetris_board::TetrisBoard, tetris_cell::TetrisCell,
-};
+use crate::util::random;
 
 #[derive(Debug)]
 pub struct GameInfo {

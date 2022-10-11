@@ -1,9 +1,8 @@
 #![allow(clippy::explicit_counter_loop)]
 
-use crate::minos::shapes::MinoShape;
-
-use super::{point::Point, tetris_cell::TetrisCell};
 use itertools::Itertools;
+
+use crate::game::{MinoShape, Point, TetrisCell};
 
 #[derive(Debug, Clone)]
 pub struct TetrisBoard {

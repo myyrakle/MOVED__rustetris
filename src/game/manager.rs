@@ -8,7 +8,7 @@ use wasm_bindgen_futures::spawn_local;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
-use crate::minos::shapes::MinoShape;
+use crate::game::MinoShape;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
 

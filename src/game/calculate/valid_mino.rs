@@ -1,7 +1,4 @@
-use crate::{
-    game::{point::Point, tetris_board::TetrisBoard, tetris_cell::TetrisCell},
-    minos::shapes::MinoShape,
-};
+use crate::game::{MinoShape, Point, TetrisBoard, TetrisCell};
 
 // 미노 충돌여부 검증
 pub fn valid_mino(board: &TetrisBoard, mino: &MinoShape, point: Point) -> bool {
