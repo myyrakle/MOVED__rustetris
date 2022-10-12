@@ -201,17 +201,20 @@ impl GameInfo {
         if !self.hold_used {
             match self.hold {
                 Some(hold) => {
-                    let temp = self.bag.pop_front().unwrap();
-                    self.bag.push_front(hold);
-                    self.hold = Some(temp);
+                    let temp = self.current_mino;
+                    self.current_mino = Some(hold);
+                    self.hold = temp;
                 }
                 None => {
-                    self.hold = self.bag.pop_front();
+                    self.hold = self.current_mino;
+                    self.current_mino = None;
                     self.fill_bag();
                 }
             }
 
-            self.hold_used = true
+            self.hold_used = true;
+
+            self.tick();
         }
     }
 
