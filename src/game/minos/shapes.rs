@@ -17,6 +17,36 @@ pub enum Mino {
     ETC,
 }
 
+impl From<Mino> for i32 {
+    fn from(value: Mino) -> Self {
+        match value {
+            Mino::I => 0,
+            Mino::J => 1,
+            Mino::L => 2,
+            Mino::O => 3,
+            Mino::S => 4,
+            Mino::T => 5,
+            Mino::Z => 6,
+            Mino::ETC => 99,
+        }
+    }
+}
+
+impl From<i32> for Mino {
+    fn from(value: i32) -> Self {
+        match value {
+            0 => Mino::I,
+            1 => Mino::J,
+            2 => Mino::L,
+            3 => Mino::O,
+            4 => Mino::S,
+            5 => Mino::T,
+            6 => Mino::Z,
+            _ => Mino::ETC,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct MinoShape {
     pub mino: Mino,
@@ -24,6 +54,22 @@ pub struct MinoShape {
 }
 
 pub type MinoShapeCells = [[TetrisCell; 4]; 4];
+
+impl From<i32> for MinoShape {
+    fn from(value: i32) -> Self {
+        match value {
+            0 => MinoShape::I,
+            1 => MinoShape::J,
+            2 => MinoShape::L,
+            3 => MinoShape::O,
+            4 => MinoShape::S,
+            5 => MinoShape::T,
+            6 => MinoShape::Z,
+            99 => MinoShape::NONE,
+            _ => MinoShape::NONE,
+        }
+    }
+}
 
 impl MinoShape {
     // ■■■■
@@ -196,10 +242,6 @@ impl MinoShape {
         ],
     };
 
-    // ■■□□
-    // □■■□
-    // □□□□
-    // □□□□
     pub const Z: Self = Self {
         mino: Mino::Z,
         cells: [
@@ -230,6 +272,10 @@ impl MinoShape {
         ],
     };
 
+    // □■□□
+    // ■■■□
+    // □□□□
+    // □□□□
     pub const T: Self = Self {
         mino: Mino::T,
         cells: [
@@ -243,6 +289,40 @@ impl MinoShape {
                 T_DEFAULT_COLOR,
                 T_DEFAULT_COLOR,
                 T_DEFAULT_COLOR,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+        ],
+    };
+
+    // □□□□
+    // □□□□
+    // □□□□
+    // □□□□
+    pub const NONE: Self = Self {
+        mino: Mino::ETC,
+        cells: [
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+            ],
+            [
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
                 TetrisCell::Empty,
             ],
             [

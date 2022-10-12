@@ -135,6 +135,9 @@ impl GameManager {
                         tetris_board.column_count,
                         tetris_board.row_count,
                     );
+
+                    let next = game_info.bag.iter().map(|e| e.mino.into()).collect();
+                    wasm_bind::render_next(next, 120, 520, 6, 26);
                 }
             });
 

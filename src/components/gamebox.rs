@@ -68,7 +68,7 @@ pub fn game_box() -> Html {
     html! {
         <span id="gamebox" tabindex="0" {onkeydown}>
             <canvas id="game-canvas" width="300" height="600" {onload}></canvas>
-            <canvas id="next-canvas" width="120" height="420"></canvas>
+            <canvas id="next-canvas" width="120" height="520"></canvas>
             <button onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
         </span>
     }
