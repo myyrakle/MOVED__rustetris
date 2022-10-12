@@ -198,19 +198,19 @@ pub fn render_next(
 
         let y = y as usize;
 
-        for x in 0..column_count {
+        for x in 1..(column_count - 1) {
             let x = x as usize;
 
-            let cell = current_mino_row.get(x);
+            let cell = current_mino_row.get(x - 1);
 
             if cell != Some(&TetrisCell::Empty) && cell.is_some() {
-                let cell = current_mino_row[x];
+                let cell = current_mino_row[x - 1];
 
                 let x = x as f64 * block_width_size;
                 let y = y as f64 * block_height_size;
                 draw_block(
                     context.clone(),
-                    x + 1.0,
+                    x,
                     y,
                     block_width_size,
                     block_height_size,
@@ -225,7 +225,7 @@ pub fn render_next(
                     y,
                     block_width_size,
                     block_height_size,
-                    "#D3D3D3",
+                    "#212121",
                 );
             }
         }
