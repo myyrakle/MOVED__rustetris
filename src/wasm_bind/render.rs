@@ -198,17 +198,19 @@ pub fn render_next(
 
         let y = y as usize;
 
-        for x in 1..column_count {
+        for x in 0..column_count {
             let x = x as usize;
 
-            if current_mino_row[x] != TetrisCell::Empty {
+            let cell = current_mino_row.get(x);
+
+            if cell != Some(&TetrisCell::Empty) && cell.is_some() {
                 let cell = current_mino_row[x];
 
                 let x = x as f64 * block_width_size;
                 let y = y as f64 * block_height_size;
                 draw_block(
                     context.clone(),
-                    x,
+                    x + 1.0,
                     y,
                     block_width_size,
                     block_height_size,
