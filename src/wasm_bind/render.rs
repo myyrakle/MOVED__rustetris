@@ -2,19 +2,49 @@ use wasm_bindgen::prelude::Closure;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 use std::cell::RefCell;
+use std::collections::VecDeque;
 use std::f64;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
+use crate::game::MinoShape;
 use crate::js_bind::body::body;
 use crate::js_bind::request_animation_frame::request_animation_frame;
 
 use super::draw::draw_block;
 
 #[wasm_bindgen]
-pub fn render(
+pub fn fill_rect(id: &str, color: &str) {
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvas = document.get_element_by_id(id).unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let width = canvas.width();
+    let height = canvas.height();
+
+    let context = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    context.begin_path();
+
+    // 흰색으로 세팅
+    context.set_fill_style(&JsValue::from_str(color));
+    context.fill_rect(0.0, 0.0, width as f64, height as f64);
+    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.stroke_rect(0.0, 0.0, width as f64, height as f64);
+}
+
+#[wasm_bindgen]
+pub fn render_board(
     board_unfolded: Vec<i32>,
     board_width: u32,
     board_height: u32,
@@ -49,7 +79,7 @@ pub fn render(
     context.begin_path();
 
     // 흰색으로 세팅
-    context.set_fill_style(&JsValue::from_str("#FFFFFF"));
+    context.set_fill_style(&JsValue::from_str("#D3D3D3"));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
     context.set_stroke_style(&JsValue::from_str("#000000"));
     context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
@@ -82,7 +112,101 @@ pub fn render(
                     y,
                     block_width_size,
                     block_height_size,
-                    "#FFFFFF",
+                    "#D3D3D3",
+                );
+            }
+        }
+    }
+}
+
+#[wasm_bindgen]
+pub fn render_next(
+    mino_list: Vec<i32>,
+    board_width: u32,
+    board_height: u32,
+    column_count: u8,
+    row_count: u8,
+) {
+    let block_width_size = (board_width / column_count as u32) as f64;
+    let block_height_size = (board_height / row_count as u32) as f64;
+
+    let mino_shapes = mino_list
+        .into_iter()
+        .map(|e| e.into())
+        .collect::<Vec<MinoShape>>();
+
+    log::info!("{:?}", mino_shapes.len());
+
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvas = document.get_element_by_id("next-canvas").unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let context = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    context.begin_path();
+
+    // 검은색으로 세팅
+    context.set_fill_style(&JsValue::from_str("#212121"));
+    context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
+    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
+
+    let mut mino_iter = mino_shapes.iter();
+    let mut current_mino = VecDeque::new();
+
+    for y in 0..row_count {
+        if current_mino.is_empty() {
+            match mino_iter.next() {
+                Some(mino) => {
+                    current_mino = mino.cells.iter().cloned().collect();
+                    continue;
+                }
+                None => {
+                    break;
+                }
+            }
+        }
+
+        let current_mino_row = current_mino.pop_front().unwrap();
+
+        let y = y as usize;
+
+        for x in 1..(column_count - 1) {
+            let x = x as usize;
+
+            let cell = current_mino_row.get(x - 1);
+
+            if cell != Some(&TetrisCell::Empty) && cell.is_some() {
+                let cell = current_mino_row[x - 1];
+
+                let x = x as f64 * block_width_size;
+                let y = y as f64 * block_height_size;
+                draw_block(
+                    context.clone(),
+                    x,
+                    y,
+                    block_width_size,
+                    block_height_size,
+                    cell.to_color(),
+                );
+            } else {
+                let x = x as f64 * block_width_size;
+                let y = y as f64 * block_height_size;
+                draw_block(
+                    context.clone(),
+                    x,
+                    y,
+                    block_width_size,
+                    block_height_size,
+                    "#212121",
                 );
             }
         }

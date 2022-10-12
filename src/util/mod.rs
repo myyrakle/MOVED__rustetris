@@ -1,2 +1,2 @@
 pub mod random;
-pub mod valid_mino;
+pub use random::*;

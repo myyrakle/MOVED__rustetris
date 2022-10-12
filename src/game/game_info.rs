@@ -2,16 +2,11 @@ use std::collections::VecDeque;
 
 use gloo_timers::callback::Interval;
 
-use crate::{
-    game::spin_type::SpinType,
-    minos::shapes::MinoShape,
-    util::{random, valid_mino::valid_mino},
+use crate::game::{
+    valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use super::{
-    bag::BagType, clear_info::ClearInfo, game_record::GameRecord, point::Point,
-    tetris_board::TetrisBoard, tetris_cell::TetrisCell,
-};
+use crate::util::random;
 
 #[derive(Debug)]
 pub struct GameInfo {
@@ -23,8 +18,8 @@ pub struct GameInfo {
     pub freezed: bool,                   //현재 미노가 보드에 붙었는지?
     pub lose: bool,                      //현재 게임 오버 여부
 
-    pub current_bag: VecDeque<MinoShape>, //현재 가방
-    pub next_bag: VecDeque<MinoShape>,    //다음 가방
+    pub next_count: i32,          // 넥스트 개수
+    pub bag: VecDeque<MinoShape>, // 현재 가방
 
     pub tetris_board: TetrisBoard, //테트리스 보드
 
@@ -41,36 +36,31 @@ pub struct GameInfo {
 impl GameInfo {
     // 가방에서 미노를 새로 가져옴.
     pub fn get_mino(&mut self) -> MinoShape {
-        // 현재 가방이 비어있다면
-        if self.current_bag.is_empty() {
-            self.fill_current_bag();
-        }
+        // 현재 가방이 비어있거나, 개수가 모자란다면 충전
+        self.manage_bag();
+        let mino = self.bag.pop_front().unwrap();
+        self.manage_bag();
+        mino
+    }
 
-        self.current_bag.pop_front().unwrap()
+    pub fn manage_bag(&mut self) {
+        if self.bag.len() <= self.next_count as usize {
+            self.fill_bag();
+        }
     }
 
     // 현재 가방 채움
-    fn fill_current_bag(&mut self) -> Option<()> {
-        if self.next_bag.is_empty() {
-            self.fill_next_bag()?;
-        }
-
-        self.current_bag = self.next_bag.clone();
-        self.fill_next_bag()?;
-
-        Some(())
-    }
-
-    // 다음 가방 채움
-    fn fill_next_bag(&mut self) -> Option<()> {
+    fn fill_bag(&mut self) -> Option<()> {
         match self.bag_mode {
             BagType::SevenBag => {
-                self.next_bag = random::shuffle(&self.mino_list).collect();
+                let mut new_bag = random::shuffle(&self.mino_list).collect();
+                self.bag.append(&mut new_bag);
             }
             BagType::NoBag => {
-                self.next_bag = (0..self.mino_list.len())
+                let mut new_bag = (0..self.mino_list.len())
                     .map(|_| random::random_select(&self.mino_list))
-                    .collect()
+                    .collect();
+                self.bag.append(&mut new_bag);
             }
         }
 
@@ -195,6 +185,8 @@ impl GameInfo {
                 self.fix_current_mino();
 
                 self.clear_line();
+
+                self.tick();
             }
             None => {}
         }
