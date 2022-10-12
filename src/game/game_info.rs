@@ -37,11 +37,17 @@ impl GameInfo {
     // 가방에서 미노를 새로 가져옴.
     pub fn get_mino(&mut self) -> MinoShape {
         // 현재 가방이 비어있거나, 개수가 모자란다면 충전
+        self.manage_bag();
+        let mino = self.bag.pop_front().unwrap();
+        self.manage_bag();
+
+        mino
+    }
+
+    pub fn manage_bag(&mut self) {
         if self.bag.len() + 1 < self.next_count as usize {
             self.fill_bag();
         }
-
-        self.bag.pop_front().unwrap()
     }
 
     // 현재 가방 채움
