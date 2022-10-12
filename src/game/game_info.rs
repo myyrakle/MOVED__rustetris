@@ -40,12 +40,11 @@ impl GameInfo {
         self.manage_bag();
         let mino = self.bag.pop_front().unwrap();
         self.manage_bag();
-
         mino
     }
 
     pub fn manage_bag(&mut self) {
-        if self.bag.len() + 1 < self.next_count as usize {
+        if self.bag.len() <= self.next_count as usize {
             self.fill_bag();
         }
     }

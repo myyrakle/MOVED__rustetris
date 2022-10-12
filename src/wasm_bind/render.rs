@@ -156,6 +156,8 @@ pub fn render_next(
         .map(|e| e.into())
         .collect::<Vec<MinoShape>>();
 
+    log::info!("{:?}", mino_shapes.len());
+
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("next-canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
