@@ -117,27 +117,6 @@ pub fn render_board(
             }
         }
     }
-
-    // context.set_fill_style(&JsValue::from_str("red"));
-    // context.set_stroke_style(&JsValue::from_str("black"));
-
-    // for y in 0..4 {
-    //     for x in 0..4 {
-    //         if tetris_board.cells[y][x] != TetrisCell::Empty {
-    //             // context.fillStyle = colors[ current[ y ][ x ] - 1 ];
-    //             // drawBlock( currentX + x, currentY + y );
-    //         }
-    //     }
-    // }
-
-    //  const BLOCK_W = W / COLS, BLOCK_H = H / ROWS;
-
-    // // xy 좌표에 사각형을 그림
-    // function drawBlock( x, y )
-    // {
-    //     context.fillRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
-    //     context.strokeRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
-    // }
 }
 
 #[wasm_bindgen]
