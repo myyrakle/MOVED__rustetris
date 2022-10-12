@@ -135,8 +135,6 @@ pub fn render_next(
         .map(|e| e.into())
         .collect::<Vec<MinoShape>>();
 
-    log::info!("{:?}", mino_shapes.len());
-
     let document = web_sys::window().unwrap().document().unwrap();
     let canvas = document.get_element_by_id("next-canvas").unwrap();
     let canvas: web_sys::HtmlCanvasElement = canvas
@@ -232,6 +230,101 @@ pub fn render_next(
     //     context.fillRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
     //     context.strokeRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
     // }
+}
+
+#[wasm_bindgen]
+pub fn render_hold(
+    mino: Option<i32>,
+    board_width: u32,
+    board_height: u32,
+    column_count: u8,
+    row_count: u8,
+) {
+    let block_width_size = (board_width / column_count as u32) as f64;
+    let block_height_size = (board_height / row_count as u32) as f64;
+
+    let mino_shapes = match mino {
+        Some(mino) => [mino]
+            .into_iter()
+            .map(|e| e.into())
+            .collect::<Vec<MinoShape>>(),
+        None => vec![],
+    };
+
+    let document = web_sys::window().unwrap().document().unwrap();
+    let canvas = document.get_element_by_id("hold-canvas").unwrap();
+    let canvas: web_sys::HtmlCanvasElement = canvas
+        .dyn_into::<web_sys::HtmlCanvasElement>()
+        .map_err(|_| ())
+        .unwrap();
+
+    let context = canvas
+        .get_context("2d")
+        .unwrap()
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .unwrap();
+
+    context.begin_path();
+
+    // 검은색으로 세팅
+    context.set_fill_style(&JsValue::from_str("#212121"));
+    context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
+    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
+
+    let mut mino_iter = mino_shapes.iter();
+    let mut current_mino = VecDeque::new();
+
+    for y in 0..row_count {
+        if current_mino.is_empty() {
+            match mino_iter.next() {
+                Some(mino) => {
+                    current_mino = mino.cells.iter().cloned().collect();
+                    continue;
+                }
+                None => {
+                    break;
+                }
+            }
+        }
+
+        let current_mino_row = current_mino.pop_front().unwrap();
+
+        let y = y as usize;
+
+        for x in 1..(column_count - 1) {
+            let x = x as usize;
+
+            let cell = current_mino_row.get(x - 1);
+
+            if cell != Some(&TetrisCell::Empty) && cell.is_some() {
+                let cell = current_mino_row[x - 1];
+
+                let x = x as f64 * block_width_size;
+                let y = y as f64 * block_height_size;
+                draw_block(
+                    context.clone(),
+                    x,
+                    y,
+                    block_width_size,
+                    block_height_size,
+                    cell.to_color(),
+                );
+            } else {
+                let x = x as f64 * block_width_size;
+                let y = y as f64 * block_height_size;
+                draw_block(
+                    context.clone(),
+                    x,
+                    y,
+                    block_width_size,
+                    block_height_size,
+                    "#212121",
+                );
+            }
+        }
+    }
 }
 
 #[wasm_bindgen]

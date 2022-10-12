@@ -61,6 +61,8 @@ impl GameManager {
             render_interval_handler: None,
             bag_mode,
             mino_list,
+            hold: None,
+            hold_used: false,
         };
 
         let game_info = Arc::new(Mutex::new(game_info));
@@ -138,6 +140,8 @@ impl GameManager {
 
                     let next = game_info.bag.iter().map(|e| e.mino.into()).collect();
                     wasm_bind::render_next(next, 120, 520, 6, 26);
+
+                    wasm_bind::render_hold(game_info.hold.map(|e| e.mino.into()), 120, 120, 6, 6);
                 }
             });
 

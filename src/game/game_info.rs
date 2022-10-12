@@ -31,6 +31,9 @@ pub struct GameInfo {
 
     pub bag_mode: BagType, //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
     pub mino_list: Vec<MinoShape>, //미노 리스트
+
+    pub hold: Option<MinoShape>, // 홀드한 미노
+    pub hold_used: bool,         // 현재 홀드 사용권을 소모했는지 여부
 }
 
 impl GameInfo {
@@ -102,6 +105,8 @@ impl GameInfo {
             self.tetris_board
                 .write_current_mino(current_mino, self.current_position);
             self.current_mino = None;
+
+            self.hold_used = false;
         }
     }
 
@@ -191,6 +196,27 @@ impl GameInfo {
             None => {}
         }
     }
-    pub fn hold(&mut self) {}
+
+    pub fn hold(&mut self) {
+        if !self.hold_used {
+            match self.hold {
+                Some(hold) => {
+                    let temp = self.current_mino;
+                    self.current_mino = Some(hold);
+                    self.hold = temp;
+                }
+                None => {
+                    self.hold = self.current_mino;
+                    self.current_mino = None;
+                    self.fill_bag();
+                }
+            }
+
+            self.hold_used = true;
+
+            self.tick();
+        }
+    }
+
     pub fn double_rotate(&mut self) {}
 }
