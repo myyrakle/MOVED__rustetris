@@ -61,6 +61,8 @@ impl GameManager {
             render_interval_handler: None,
             bag_mode,
             mino_list,
+            hold: None,
+            hold_used: false,
         };
 
         let game_info = Arc::new(Mutex::new(game_info));
