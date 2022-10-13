@@ -230,6 +230,9 @@ impl GameManager {
         let mut game_info = self.game_info.lock().ok().unwrap();
 
         game_info.bag = VecDeque::new();
+        game_info.current_mino = None;
+        game_info.hold_used = false;
+        game_info.hold = None;
 
         Some(())
     }
