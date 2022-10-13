@@ -1,33 +1,24 @@
-pub fn rotate_right<T, const LEN: usize>(input: [[T; LEN]; LEN]) -> [[T; LEN]; LEN]
+pub fn rotate_right<T, const LEN: usize>(input: &mut [[T; LEN]; LEN], length: usize)
 where
     T: Default + Copy,
 {
     let mut output = [[T::default(); LEN]; LEN];
 
     for (y, row) in input.into_iter().enumerate() {
-        for (x, cell) in row.into_iter().enumerate() {
-            let (x, y) = ((y as i32 - LEN as i32).abs() as usize, x);
+        if y >= length {
+            break;
+        }
 
-            output[y][x] = cell;
+        for (x, cell) in row.into_iter().enumerate() {
+            if x >= length {
+                break;
+            }
+
+            let (x, y) = (length - 1 - y, x);
+
+            output[y][x] = cell.to_owned();
         }
     }
 
-    output
-}
-
-pub fn rotate_left<T, const LEN: usize>(input: [[T; LEN]; LEN]) -> [[T; LEN]; LEN]
-where
-    T: Default + Copy,
-{
-    let mut output = [[T::default(); LEN]; LEN];
-
-    for (y, row) in input.into_iter().enumerate() {
-        for (x, cell) in row.into_iter().enumerate() {
-            let (x, y) = (y, (x as i32 - LEN as i32).abs() as usize);
-
-            output[y][x] = cell;
-        }
-    }
-
-    output
+    *input = output;
 }

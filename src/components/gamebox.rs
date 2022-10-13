@@ -62,7 +62,6 @@ pub fn game_box() -> Html {
 
     let onload = Callback::from(|_| {
         fill_rect("game-canvas", "D3D3D3");
-        log::info!("asdf");
     });
 
     html! {
