@@ -19,9 +19,7 @@ pub fn game_box() -> Html {
         Callback::from(move |_| {
             focus("gamebox");
 
-            if !game_manager.on_play()
-            /*Using different mutex objects "GameInfo" */
-            {
+            if !game_manager.on_play() {
                 // start_disabled.set(true); // Enabling this causes problems.
                 game_manager.start_game(); /*Using different mutex objects "GameInfo" */
             }
@@ -60,22 +58,40 @@ pub fn game_box() -> Html {
     });
 
     html! {
-        <div id="gamebox" tabindex="0" class="flex items-center" {onkeydown} onclick={Callback::from(|_| {
+        <div id="gamebox" tabindex="0" class="flex content-start" {onkeydown} onclick={Callback::from(|_| {
             log::info!("test");
             GameManager::empty_render();
         })}>
-            <div>
-                <p>{"Hold"}</p>
-                <canvas id="hold-canvas" class="" width="120" height="120"></canvas>
+            <div class="flex flex-col m-5 justify-start">
+                <div class="mb-[270px]">
+                    <p class="font-mono text-2xl text-center">{"Hold"}</p>
+                    <canvas id="hold-canvas" class="" width="120" height="120"></canvas>
+                </div>
+
+                <div class="flex flex-col justify-between mb-[30px]">
+                    <div class="flex flex-row justify-between">
+                        <div class="font-mono text-base	">{"Score"}</div>
+                        <div>{"0"}</div>
+                    </div>
+                    <div class="flex flex-row justify-between">
+                        <div class="font-mono text-base	content-start">{"Quad"}</div>
+                        <div class="">{"0"}</div>
+                    </div>
+                    <div class="flex flex-row justify-between">
+                        <div class="font-mono text-base	">{"PC"}</div>
+                        <div>{"0"}</div>
+                    </div>
+                </div>
+
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
             </div>
 
-            <div>
-                <canvas id="game-canvas" class="" width="300" height="600"></canvas>
+            <div class="my-5">
+                <canvas id="game-canvas" width="300" height="600"></canvas>
             </div>
 
-            <div>
-                <p>{"Next"}</p>
+            <div class="m-5">
+                <p class="font-mono text-2xl text-center">{"Next"}</p>
                 <canvas id="next-canvas" class="" width="120" height="520"></canvas>
             </div>
         </div>
