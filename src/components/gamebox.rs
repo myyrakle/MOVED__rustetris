@@ -60,14 +60,13 @@ pub fn game_box() -> Html {
         }
     });
 
-    let onload = Callback::from(|_| {
-        fill_rect("game-canvas", "D3D3D3");
-    });
-
     html! {
-        <span id="gamebox" tabindex="0" {onkeydown}>
+        <span id="gamebox" tabindex="0" {onkeydown} onclick={Callback::from(|_| {
+            log::info!("test");
+            GameManager::empty_render();
+        })}>
             <canvas id="hold-canvas" width="120" height="120"></canvas>
-            <canvas id="game-canvas" width="300" height="600" {onload}></canvas>
+            <canvas id="game-canvas" width="300" height="600"></canvas>
             <canvas id="next-canvas" width="120" height="520"></canvas>
             <button onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
         </span>

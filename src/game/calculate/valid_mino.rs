@@ -27,8 +27,8 @@ pub fn valid_mino(board: &TetrisBoard, mino: &MinoShapeCells, point: Point) -> b
                 }
             }
 
-            let above_board = y < 0;
-            //let next_board = x < 0 || x > board.column_count;
+            let above_board = y < 0; // 위로 초과
+            let next_board = x < 0 || x >= board.column_count.into(); // 옆으로 초과
 
             let y = y as usize;
             let x = x as usize;
@@ -49,6 +49,10 @@ pub fn valid_mino(board: &TetrisBoard, mino: &MinoShapeCells, point: Point) -> b
                 None => {
                     if above_board {
                         if above_full {
+                            return false;
+                        }
+
+                        if next_board {
                             return false;
                         }
 
