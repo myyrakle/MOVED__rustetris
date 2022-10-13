@@ -48,7 +48,7 @@ impl GameManager {
         let game_info = GameInfo {
             record: Default::default(),
             render_interval: 200,
-            tick_interval: 2000,
+            tick_interval: 1000,
             current_position: Default::default(),
             current_mino: None,
             freezed: false,
