@@ -139,6 +139,7 @@ impl GameInfo {
                     // 패배 처리
                     self.on_play = false;
                     self.lose = true;
+                    self.current_mino = None;
                 }
             }
         }
