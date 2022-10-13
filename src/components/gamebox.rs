@@ -60,7 +60,7 @@ pub fn game_box() -> Html {
     });
 
     html! {
-        <span id="gamebox" tabindex="0" {onkeydown} onclick={Callback::from(|_| {
+        <span id="gamebox" tabindex="0" {onkeydown} onload={Callback::from(|_| {
             log::info!("test");
             GameManager::empty_render();
         })}>
