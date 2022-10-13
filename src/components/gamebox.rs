@@ -4,7 +4,6 @@ use yew::prelude::*;
 
 use crate::game::manager::GameManager;
 use crate::js_bind::focus::focus;
-use crate::wasm_bind::fill_rect;
 
 #[function_component(GameBox)]
 pub fn game_box() -> Html {
