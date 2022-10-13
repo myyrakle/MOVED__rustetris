@@ -113,6 +113,10 @@ impl GameInfo {
     }
 
     pub fn tick(&mut self) {
+        if !self.on_play {
+            return;
+        }
+
         let current_mino = self.current_mino;
 
         match current_mino {
