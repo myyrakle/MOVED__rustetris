@@ -1,6 +1,8 @@
 # rustetris
 
 Yew.rs, Canvas로 구현된 웹 테트리스
+    
+페이지: https://tetris.myyrakle.com/  
 
 ## 실행법
 
