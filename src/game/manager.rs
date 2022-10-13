@@ -89,6 +89,7 @@ impl GameManager {
         let game_info = Arc::clone(&self.game_info);
         spawn_local(async move {
             let game_info = game_info;
+            let _game_info = Arc::clone(&game_info);
 
             let tick_interval = game_info.lock().ok().unwrap().tick_interval;
 
@@ -100,9 +101,15 @@ impl GameManager {
                 game_info.tick();
             });
 
+            let game_info = _game_info;
+
             loop {
-                let next = future_list.next();
-                next.await;
+                if game_info.lock().unwrap().on_play {
+                    let next = future_list.next();
+                    next.await;
+                } else {
+                    break;
+                }
             }
         });
 
@@ -110,6 +117,7 @@ impl GameManager {
         let game_info = Arc::clone(&self.game_info);
         spawn_local(async move {
             let game_info = game_info;
+            let _game_info = Arc::clone(&game_info);
 
             let render_interval = game_info.lock().ok().unwrap().render_interval;
 
@@ -145,9 +153,15 @@ impl GameManager {
                 }
             });
 
+            let game_info = _game_info;
+
             loop {
-                let next = future_list.next();
-                next.await;
+                if game_info.lock().unwrap().on_play {
+                    let next = future_list.next();
+                    next.await;
+                } else {
+                    break;
+                }
             }
         });
 

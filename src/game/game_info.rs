@@ -137,6 +137,7 @@ impl GameInfo {
 
                 if !valid_mino(&self.tetris_board, &mino.cells, point) {
                     // 패배 처리
+                    log::info!("game over");
                     self.on_play = false;
                     self.lose = true;
                     self.current_mino = None;
