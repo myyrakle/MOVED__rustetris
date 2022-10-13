@@ -73,24 +73,24 @@ impl From<i32> for MinoShape {
 }
 
 impl MinoShape {
-    // ■■■■
     // □□□□
+    // ■■■■
     // □□□□
     // □□□□
     pub const I: Self = Self {
         mino: Mino::I,
         cells: [
             [
-                I_DEFAULT_COLOR,
-                I_DEFAULT_COLOR,
-                I_DEFAULT_COLOR,
-                I_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
             ],
             [
-                TetrisCell::Empty,
-                TetrisCell::Empty,
-                TetrisCell::Empty,
-                TetrisCell::Empty,
+                I_DEFAULT_COLOR,
+                I_DEFAULT_COLOR,
+                I_DEFAULT_COLOR,
+                I_DEFAULT_COLOR,
             ],
             [
                 TetrisCell::Empty,
@@ -107,23 +107,23 @@ impl MinoShape {
         ],
     };
 
+    // □□■□
     // ■■■□
-    // ■□□□
     // □□□□
     // □□□□
     pub const L: Self = Self {
         mino: Mino::L,
         cells: [
             [
-                L_DEFAULT_COLOR,
-                L_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
                 L_DEFAULT_COLOR,
                 TetrisCell::Empty,
             ],
             [
                 L_DEFAULT_COLOR,
-                TetrisCell::Empty,
-                TetrisCell::Empty,
+                L_DEFAULT_COLOR,
+                L_DEFAULT_COLOR,
                 TetrisCell::Empty,
             ],
             [
@@ -141,8 +141,8 @@ impl MinoShape {
         ],
     };
 
+    // ■□□□
     // ■■■□
-    // □□■□
     // □□□□
     // □□□□
     pub const J: MinoShape = Self {
@@ -150,13 +150,13 @@ impl MinoShape {
         cells: [
             [
                 J_DEFAULT_COLOR,
-                J_DEFAULT_COLOR,
-                J_DEFAULT_COLOR,
+                TetrisCell::Empty,
+                TetrisCell::Empty,
                 TetrisCell::Empty,
             ],
             [
-                TetrisCell::Empty,
-                TetrisCell::Empty,
+                J_DEFAULT_COLOR,
+                J_DEFAULT_COLOR,
                 J_DEFAULT_COLOR,
                 TetrisCell::Empty,
             ],
@@ -242,6 +242,11 @@ impl MinoShape {
             ],
         ],
     };
+
+    // ■■□□
+    // □■■□
+    // □□□□
+    // □□□□
 
     pub const Z: Self = Self {
         mino: Mino::Z,
