@@ -247,7 +247,6 @@ impl MinoShape {
     // □■■□
     // □□□□
     // □□□□
-
     pub const Z: Self = Self {
         mino: Mino::Z,
         cells: [
