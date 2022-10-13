@@ -9,6 +9,7 @@ use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
 use crate::game::MinoShape;
+use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
 
@@ -170,6 +171,10 @@ impl GameManager {
                     wasm_bind::render_next(next, 120, 520, 6, 26);
 
                     wasm_bind::render_hold(game_info.hold.map(|e| e.mino.into()), 120, 120, 6, 6);
+
+                    write_text("score", game_info.record.score.to_string());
+                    write_text("pc", game_info.record.perfect_clear.to_string());
+                    write_text("quad", game_info.record.quad.to_string());
                 }
             });
 
