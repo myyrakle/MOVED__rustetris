@@ -94,10 +94,28 @@ impl GameInfo {
             }
         }
 
+        let is_perfect = self.tetris_board.unfold().iter().all(|e| e == &0);
+
+        if is_perfect {
+            self.record.score += 1000;
+            self.record.perfect_clear += 1;
+        }
+
+        match line {
+            1 => self.record.score += 10,
+            2 => self.record.score += 20,
+            3 => self.record.score += 30,
+            4 => {
+                self.record.score += 100;
+                self.record.quad += 1;
+            }
+            _ => {}
+        }
+
         ClearInfo {
             line,
             spin: SpinType::None,
-            is_perfect: false,
+            is_perfect,
         }
     }
 
