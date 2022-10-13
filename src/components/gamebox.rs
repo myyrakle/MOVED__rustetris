@@ -4,7 +4,6 @@ use yew::prelude::*;
 
 use crate::game::manager::GameManager;
 use crate::js_bind::focus::focus;
-use crate::wasm_bind::fill_rect;
 
 #[function_component(GameBox)]
 pub fn game_box() -> Html {
@@ -20,9 +19,7 @@ pub fn game_box() -> Html {
         Callback::from(move |_| {
             focus("gamebox");
 
-            if !game_manager.on_play()
-            /*Using different mutex objects "GameInfo" */
-            {
+            if !game_manager.on_play() {
                 // start_disabled.set(true); // Enabling this causes problems.
                 game_manager.start_game(); /*Using different mutex objects "GameInfo" */
             }
@@ -60,16 +57,43 @@ pub fn game_box() -> Html {
         }
     });
 
-    let onload = Callback::from(|_| {
-        fill_rect("game-canvas", "D3D3D3");
-    });
-
     html! {
-        <span id="gamebox" tabindex="0" {onkeydown}>
-            <canvas id="hold-canvas" width="120" height="120"></canvas>
-            <canvas id="game-canvas" width="300" height="600" {onload}></canvas>
-            <canvas id="next-canvas" width="120" height="520"></canvas>
-            <button onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
-        </span>
+        <div id="gamebox" tabindex="0" class="flex content-start" {onkeydown} onclick={Callback::from(|_| {
+            log::info!("test");
+            GameManager::empty_render();
+        })}>
+            <div class="flex flex-col m-5 justify-start">
+                <div class="mb-[270px]">
+                    <p class="font-mono text-2xl text-center">{"Hold"}</p>
+                    <canvas id="hold-canvas" class="" width="120" height="120"></canvas>
+                </div>
+
+                <div class="flex flex-col justify-between mb-[30px]">
+                    <div class="flex flex-row justify-between">
+                        <div class="font-mono text-base	">{"Score"}</div>
+                        <div id="score">{"0"}</div>
+                    </div>
+                    <div class="flex flex-row justify-between">
+                        <div class="font-mono text-base	content-start">{"Quad"}</div>
+                        <div id="quad">{"0"}</div>
+                    </div>
+                    <div class="flex flex-row justify-between">
+                        <div class="font-mono text-base	">{"PC"}</div>
+                        <div id="pc">{"0"}</div>
+                    </div>
+                </div>
+
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
+            </div>
+
+            <div class="my-5">
+                <canvas id="game-canvas" width="300" height="600"></canvas>
+            </div>
+
+            <div class="m-5">
+                <p class="font-mono text-2xl text-center">{"Next"}</p>
+                <canvas id="next-canvas" class="" width="120" height="520"></canvas>
+            </div>
+        </div>
     }
 }

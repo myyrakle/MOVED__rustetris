@@ -94,10 +94,28 @@ impl GameInfo {
             }
         }
 
+        let is_perfect = self.tetris_board.unfold().iter().all(|e| e == &0);
+
+        if is_perfect {
+            self.record.score += 1000;
+            self.record.perfect_clear += 1;
+        }
+
+        match line {
+            1 => self.record.score += 10,
+            2 => self.record.score += 20,
+            3 => self.record.score += 30,
+            4 => {
+                self.record.score += 100;
+                self.record.quad += 1;
+            }
+            _ => {}
+        }
+
         ClearInfo {
             line,
             spin: SpinType::None,
-            is_perfect: false,
+            is_perfect,
         }
     }
 
@@ -113,6 +131,10 @@ impl GameInfo {
     }
 
     pub fn tick(&mut self) {
+        if !self.on_play {
+            return;
+        }
+
         let current_mino = self.current_mino;
 
         match current_mino {
@@ -120,7 +142,7 @@ impl GameInfo {
                 let current_position = self.current_position;
                 let next_position = current_position.add_y(1);
 
-                if !valid_mino(&self.tetris_board, &current_mino, next_position) {
+                if !valid_mino(&self.tetris_board, &current_mino.cells, next_position) {
                     // 블럭 고정 후 현재 미노에서 제거
                     self.fix_current_mino();
                     self.clear_line();
@@ -135,10 +157,12 @@ impl GameInfo {
                 let point = Point::start_point(self.tetris_board.column_count);
                 self.current_position = point;
 
-                if !valid_mino(&self.tetris_board, &mino, point) {
+                if !valid_mino(&self.tetris_board, &mino.cells, point) {
                     // 패배 처리
+                    log::info!("game over");
                     self.on_play = false;
                     self.lose = true;
+                    self.current_mino = None;
                 }
             }
         }
@@ -148,7 +172,7 @@ impl GameInfo {
         if let Some(current_mino) = self.current_mino {
             let next_position = self.current_position.clone().add_x(-1);
 
-            if valid_mino(&self.tetris_board, &current_mino, next_position) {
+            if valid_mino(&self.tetris_board, &current_mino.cells, next_position) {
                 self.current_position = next_position;
             }
         }
@@ -158,7 +182,7 @@ impl GameInfo {
         if let Some(current_mino) = self.current_mino {
             let next_position = self.current_position.clone().add_x(1);
 
-            if valid_mino(&self.tetris_board, &current_mino, next_position) {
+            if valid_mino(&self.tetris_board, &current_mino.cells, next_position) {
                 self.current_position = next_position;
             }
         }
@@ -177,7 +201,7 @@ impl GameInfo {
             rotate_right(&mut next_shape, real_length);
             rotate_right(&mut next_shape, real_length);
 
-            if valid_mino(&self.tetris_board, &current_mino, self.current_position) {
+            if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.cells = next_shape;
             }
         }
@@ -194,7 +218,7 @@ impl GameInfo {
             let mut next_shape = current_mino.cells.clone();
             rotate_right(&mut next_shape, real_length);
 
-            if valid_mino(&self.tetris_board, &current_mino, self.current_position) {
+            if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.cells = next_shape;
             }
         }
@@ -212,7 +236,7 @@ impl GameInfo {
                 let current_position = self.current_position;
                 let mut next_position = current_position.add_y(1);
                 loop {
-                    if !valid_mino(&self.tetris_board, &current_mino, next_position) {
+                    if !valid_mino(&self.tetris_board, &current_mino.cells, next_position) {
                         next_position = next_position.add_y(-1);
                         break;
                     } else {
@@ -265,7 +289,11 @@ impl GameInfo {
             rotate_right(&mut next_shape, real_length);
             rotate_right(&mut next_shape, real_length);
 
-            if valid_mino(&self.tetris_board, &current_mino, self.current_position) {
+            if valid_mino(
+                &self.tetris_board,
+                &current_mino.cells,
+                self.current_position,
+            ) {
                 current_mino.cells = next_shape;
             }
         }

@@ -38,6 +38,10 @@ impl std::convert::TryFrom<i32> for TetrisCell {
 }
 
 impl TetrisCell {
+    pub fn is_empty(&self) -> bool {
+        self == &Self::Empty
+    }
+
     pub fn to_color(&self) -> &str {
         match self {
             Self::Empty => "white",
