@@ -13,6 +13,12 @@ pub enum TetrisCell {
     Yellow = "yellow",
 }
 
+impl Default for TetrisCell {
+    fn default() -> Self {
+        Self::Empty
+    }
+}
+
 impl std::convert::TryFrom<i32> for TetrisCell {
     type Error = ();
 

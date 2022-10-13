@@ -6,7 +6,9 @@ use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use crate::util::random;
+use crate::util::{random, rotate_right};
+
+use super::Mino;
 
 #[derive(Debug)]
 pub struct GameInfo {
@@ -162,8 +164,41 @@ impl GameInfo {
         }
     }
 
-    pub fn left_rotate(&mut self) {}
-    pub fn right_rotate(&mut self) {}
+    pub fn left_rotate(&mut self) {
+        if let Some(current_mino) = &mut self.current_mino {
+            if current_mino.mino == Mino::O {
+                return;
+            }
+
+            let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
+
+            let mut next_shape = current_mino.cells.clone();
+            rotate_right(&mut next_shape, real_length);
+            rotate_right(&mut next_shape, real_length);
+            rotate_right(&mut next_shape, real_length);
+
+            if valid_mino(&self.tetris_board, &current_mino, self.current_position) {
+                current_mino.cells = next_shape;
+            }
+        }
+    }
+
+    pub fn right_rotate(&mut self) {
+        if let Some(current_mino) = &mut self.current_mino {
+            if current_mino.mino == Mino::O {
+                return;
+            }
+
+            let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
+
+            let mut next_shape = current_mino.cells.clone();
+            rotate_right(&mut next_shape, real_length);
+
+            if valid_mino(&self.tetris_board, &current_mino, self.current_position) {
+                current_mino.cells = next_shape;
+            }
+        }
+    }
 
     pub fn soft_drop(&mut self) {
         self.tick();
@@ -218,5 +253,21 @@ impl GameInfo {
         }
     }
 
-    pub fn double_rotate(&mut self) {}
+    pub fn double_rotate(&mut self) {
+        if let Some(current_mino) = &mut self.current_mino {
+            if current_mino.mino == Mino::O {
+                return;
+            }
+
+            let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
+
+            let mut next_shape = current_mino.cells.clone();
+            rotate_right(&mut next_shape, real_length);
+            rotate_right(&mut next_shape, real_length);
+
+            if valid_mino(&self.tetris_board, &current_mino, self.current_position) {
+                current_mino.cells = next_shape;
+            }
+        }
+    }
 }

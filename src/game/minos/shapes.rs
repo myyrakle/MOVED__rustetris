@@ -5,7 +5,7 @@ use super::colors::{
     T_DEFAULT_COLOR, Z_DEFAULT_COLOR,
 };
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub enum Mino {
     I,
     J,
@@ -14,6 +14,7 @@ pub enum Mino {
     S,
     T,
     Z,
+    #[default]
     ETC,
 }
 
@@ -47,7 +48,7 @@ impl From<i32> for Mino {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct MinoShape {
     pub mino: Mino,
     pub cells: MinoShapeCells,
