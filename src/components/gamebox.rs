@@ -60,14 +60,24 @@ pub fn game_box() -> Html {
     });
 
     html! {
-        <span id="gamebox" tabindex="0" {onkeydown} onload={Callback::from(|_| {
+        <div id="gamebox" tabindex="0" class="flex items-center" {onkeydown} onclick={Callback::from(|_| {
             log::info!("test");
             GameManager::empty_render();
         })}>
-            <canvas id="hold-canvas" width="120" height="120"></canvas>
-            <canvas id="game-canvas" width="300" height="600"></canvas>
-            <canvas id="next-canvas" width="120" height="520"></canvas>
-            <button onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
-        </span>
+            <div>
+                <p>{"Hold"}</p>
+                <canvas id="hold-canvas" class="" width="120" height="120"></canvas>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onclick={onclick} disabled={*start_disabled}>{"Start"}</button>
+            </div>
+
+            <div>
+                <canvas id="game-canvas" class="" width="300" height="600"></canvas>
+            </div>
+
+            <div>
+                <p>{"Next"}</p>
+                <canvas id="next-canvas" class="" width="120" height="520"></canvas>
+            </div>
+        </div>
     }
 }
