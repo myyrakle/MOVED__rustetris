@@ -71,15 +71,15 @@ pub fn game_box() -> Html {
                 <div class="flex flex-col justify-between mb-[30px]">
                     <div class="flex flex-row justify-between">
                         <div class="font-mono text-base	">{"Score"}</div>
-                        <div>{"0"}</div>
+                        <div id="score">{"0"}</div>
                     </div>
                     <div class="flex flex-row justify-between">
                         <div class="font-mono text-base	content-start">{"Quad"}</div>
-                        <div class="">{"0"}</div>
+                        <div id="quad">{"0"}</div>
                     </div>
                     <div class="flex flex-row justify-between">
                         <div class="font-mono text-base	">{"PC"}</div>
-                        <div>{"0"}</div>
+                        <div id="pc">{"0"}</div>
                     </div>
                 </div>
 
