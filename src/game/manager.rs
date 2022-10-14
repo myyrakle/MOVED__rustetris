@@ -143,8 +143,6 @@ impl GameManager {
             let render_interval = game_info.lock().ok().unwrap().render_interval;
 
             let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
-                //log::info!("RENDER");
-
                 let game_info = game_info.lock().unwrap();
 
                 if game_info.on_play {
@@ -152,7 +150,7 @@ impl GameManager {
                         Some(current_mino) => {
                             let mut tetris_board = game_info.tetris_board.clone();
                             tetris_board
-                                .write_current_mino(current_mino, game_info.current_position);
+                                .write_current_mino(current_mino.cells, game_info.current_position);
 
                             tetris_board
                         }

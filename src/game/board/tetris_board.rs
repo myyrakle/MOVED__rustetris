@@ -2,7 +2,7 @@
 
 use itertools::Itertools;
 
-use crate::game::{MinoShape, Point, TetrisCell};
+use crate::game::{MinoShapeCells, Point, TetrisCell};
 
 #[derive(Debug, Clone)]
 pub struct TetrisBoard {
@@ -45,13 +45,11 @@ impl TetrisBoard {
         }
     }
 
-    pub fn write_current_mino(&mut self, mino: MinoShape, position: Point) {
+    pub fn write_current_mino(&mut self, mino: MinoShapeCells, position: Point) {
         let x = position.x;
         let y = position.y;
 
         let mut mino_x = 0;
-
-        let mino = mino.cells;
 
         let mino_row_count = mino.len();
         let mino_column_count = mino[0].len();
