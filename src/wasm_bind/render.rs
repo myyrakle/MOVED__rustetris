@@ -7,6 +7,10 @@ use std::f64;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 
+use crate::contants::color::{
+    BOARD_DEFAULT_COLOR, BOARD_STROKE_DEFAULT_COLOR, HOLD_DEFAULT_COLOR, HOLD_STROKE_DEFAULT_COLOR,
+    NEXT_DEFAULT_COLOR, NEXT_STROKE_DEFAULT_COLOR,
+};
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
 use crate::game::MinoShape;
@@ -50,10 +54,9 @@ pub fn render_board(
 
     context.begin_path();
 
-    // 흰색으로 세팅
-    context.set_fill_style(&JsValue::from_str("#D3D3D3"));
+    context.set_fill_style(&JsValue::from_str(BOARD_DEFAULT_COLOR));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
-    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.set_stroke_style(&JsValue::from_str(BOARD_STROKE_DEFAULT_COLOR));
     context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
 
     for x in 0..column_count {
@@ -84,7 +87,7 @@ pub fn render_board(
                     y,
                     block_width_size,
                     block_height_size,
-                    "#D3D3D3",
+                    BOARD_DEFAULT_COLOR,
                 );
             }
         }
@@ -124,9 +127,9 @@ pub fn render_next(
     context.begin_path();
 
     // 검은색으로 세팅
-    context.set_fill_style(&JsValue::from_str("#212121"));
+    context.set_fill_style(&JsValue::from_str(NEXT_DEFAULT_COLOR));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
-    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.set_stroke_style(&JsValue::from_str(NEXT_STROKE_DEFAULT_COLOR));
     context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
 
     let mut mino_iter = mino_shapes.iter();
@@ -176,32 +179,11 @@ pub fn render_next(
                     y,
                     block_width_size,
                     block_height_size,
-                    "#212121",
+                    NEXT_DEFAULT_COLOR,
                 );
             }
         }
     }
-
-    // context.set_fill_style(&JsValue::from_str("red"));
-    // context.set_stroke_style(&JsValue::from_str("black"));
-
-    // for y in 0..4 {
-    //     for x in 0..4 {
-    //         if tetris_board.cells[y][x] != TetrisCell::Empty {
-    //             // context.fillStyle = colors[ current[ y ][ x ] - 1 ];
-    //             // drawBlock( currentX + x, currentY + y );
-    //         }
-    //     }
-    // }
-
-    //  const BLOCK_W = W / COLS, BLOCK_H = H / ROWS;
-
-    // // xy 좌표에 사각형을 그림
-    // function drawBlock( x, y )
-    // {
-    //     context.fillRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
-    //     context.strokeRect( BLOCK_W * x, BLOCK_H * y, BLOCK_W - 1 , BLOCK_H - 1 );
-    // }
 }
 
 #[wasm_bindgen]
@@ -240,9 +222,9 @@ pub fn render_hold(
     context.begin_path();
 
     // 검은색으로 세팅
-    context.set_fill_style(&JsValue::from_str("#212121"));
+    context.set_fill_style(&JsValue::from_str(HOLD_DEFAULT_COLOR));
     context.fill_rect(0.0, 0.0, board_width as f64, board_height as f64);
-    context.set_stroke_style(&JsValue::from_str("#000000"));
+    context.set_stroke_style(&JsValue::from_str(HOLD_STROKE_DEFAULT_COLOR));
     context.stroke_rect(0.0, 0.0, board_width as f64, board_height as f64);
 
     let mut mino_iter = mino_shapes.iter();
@@ -292,7 +274,7 @@ pub fn render_hold(
                     y,
                     block_width_size,
                     block_height_size,
-                    "#212121",
+                    HOLD_DEFAULT_COLOR,
                 );
             }
         }
