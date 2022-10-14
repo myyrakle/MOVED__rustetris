@@ -6,7 +6,7 @@ use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use crate::util::{random, rotate_right};
+use crate::util::{random, rotate_right, rotate left};
 
 use super::Mino;
 
@@ -197,9 +197,7 @@ impl GameInfo {
             let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
 
             let mut next_shape = current_mino.cells.clone();
-            rotate_right(&mut next_shape, real_length);
-            rotate_right(&mut next_shape, real_length);
-            rotate_right(&mut next_shape, real_length);
+            rotate_left(&mut next_shape, real_length);
 
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.cells = next_shape;
