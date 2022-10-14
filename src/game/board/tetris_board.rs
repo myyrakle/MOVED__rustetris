@@ -68,7 +68,12 @@ impl TetrisBoard {
                         if let TetrisCell::Empty = cell {
                             // No Conflict
                             self.cells[y][x] = mino[mino_y][mino_x];
+                        } else if let TetrisCell::Ghost = cell {
+                            // No Conflict
+                            self.cells[y][x] = mino[mino_y][mino_x];
                         } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
+                            // No Conflict
+                        } else if let TetrisCell::Ghost = mino[mino_y][mino_x] {
                             // No Conflict
                         } else {
                             // Conflict
