@@ -74,13 +74,27 @@ impl From<i32> for MinoShape {
 }
 
 impl MinoShape {
+    pub fn to_ghost(mut self) -> Self {
+        for row in &mut self.cells {
+            for cell in row {
+                if !cell.is_empty() {
+                    *cell = TetrisCell::Ghost;
+                }
+            }
+        }
+
+        self
+    }
+}
+
+impl MinoShape {
     // □□□□
     // ■■■■
     // □□□□
     // □□□□
     pub const I: Self = Self {
         mino: Mino::I,
-        rotation_count: 0, 
+        rotation_count: 0,
         cells: [
             [
                 TetrisCell::Empty,
@@ -115,7 +129,7 @@ impl MinoShape {
     // □□□□
     pub const L: Self = Self {
         mino: Mino::L,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [
@@ -151,7 +165,7 @@ impl MinoShape {
     // □□□□
     pub const J: MinoShape = Self {
         mino: Mino::J,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [
@@ -187,7 +201,7 @@ impl MinoShape {
     // □□□□
     pub const O: Self = Self {
         mino: Mino::O,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [
@@ -223,7 +237,7 @@ impl MinoShape {
     // □□□□
     pub const S: Self = Self {
         mino: Mino::S,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [
@@ -259,7 +273,7 @@ impl MinoShape {
     // □□□□
     pub const Z: Self = Self {
         mino: Mino::Z,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [
@@ -295,7 +309,7 @@ impl MinoShape {
     // □□□□
     pub const T: Self = Self {
         mino: Mino::T,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [
@@ -331,7 +345,7 @@ impl MinoShape {
     // □□□□
     pub const NONE: Self = Self {
         mino: Mino::ETC,
-        rotation_count: 0, 
+        rotation_count: 0,
 
         cells: [
             [

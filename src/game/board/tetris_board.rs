@@ -2,7 +2,7 @@
 
 use itertools::Itertools;
 
-use crate::game::{MinoShape, Point, TetrisCell};
+use crate::game::{MinoShapeCells, Point, TetrisCell};
 
 #[derive(Debug, Clone)]
 pub struct TetrisBoard {
@@ -19,8 +19,8 @@ impl TetrisBoard {
             .clone()
             .into_iter()
             .flatten()
-            .map(|e| e as i32)
-            .collect::<Vec<i32>>()
+            .map(|e| e.into_code())
+            .collect::<Vec<_>>()
     }
 
     pub fn from_unfold(
@@ -45,13 +45,11 @@ impl TetrisBoard {
         }
     }
 
-    pub fn write_current_mino(&mut self, mino: MinoShape, position: Point) {
+    pub fn write_current_mino(&mut self, mino: MinoShapeCells, position: Point) {
         let x = position.x;
         let y = position.y;
 
         let mut mino_x = 0;
-
-        let mino = mino.cells;
 
         let mino_row_count = mino.len();
         let mino_column_count = mino[0].len();
@@ -70,7 +68,12 @@ impl TetrisBoard {
                         if let TetrisCell::Empty = cell {
                             // No Conflict
                             self.cells[y][x] = mino[mino_y][mino_x];
+                        } else if let TetrisCell::Ghost = cell {
+                            // No Conflict
+                            self.cells[y][x] = mino[mino_y][mino_x];
                         } else if let TetrisCell::Empty = mino[mino_y][mino_x] {
+                            // No Conflict
+                        } else if let TetrisCell::Ghost = mino[mino_y][mino_x] {
                             // No Conflict
                         } else {
                             // Conflict

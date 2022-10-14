@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TetrisCell {
     Empty = "white",
+    Ghost = "#d3d3d3",
     Red = "red",
     Green = "green",
     Blue = "blue",
@@ -32,6 +33,7 @@ impl std::convert::TryFrom<i32> for TetrisCell {
             5 => Ok(TetrisCell::Cyan),
             6 => Ok(TetrisCell::Orange),
             7 => Ok(TetrisCell::Yellow),
+            8 => Ok(TetrisCell::Ghost),
             _ => Err(()),
         }
     }
@@ -40,6 +42,21 @@ impl std::convert::TryFrom<i32> for TetrisCell {
 impl TetrisCell {
     pub fn is_empty(&self) -> bool {
         self == &Self::Empty
+    }
+
+    pub fn into_code(&self) -> i32 {
+        match self {
+            Self::Empty => 0,
+            Self::Red => 1,
+            Self::Green => 2,
+            Self::Blue => 3,
+            Self::Purple => 4,
+            Self::Cyan => 5,
+            Self::Orange => 6,
+            Self::Yellow => 7,
+            Self::Ghost => 8,
+            _ => 0,
+        }
     }
 
     pub fn to_color(&self) -> &str {
@@ -52,7 +69,8 @@ impl TetrisCell {
             Self::Cyan => "cyan",
             Self::Orange => "orange",
             Self::Yellow => "yellow",
-            _ => "while",
+            Self::Ghost => "#d3d3d3",
+            _ => "white",
         }
     }
 }

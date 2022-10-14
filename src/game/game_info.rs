@@ -6,7 +6,7 @@ use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use crate::util::{random, rotate_right, rotate_left, KICK_INDEX_3BY3, KICK_INDEX_I};
+use crate::util::{random, rotate_left, rotate_right, KICK_INDEX_3BY3, KICK_INDEX_I};
 
 use super::Mino;
 
@@ -18,8 +18,8 @@ pub struct GameInfo {
     pub current_position: Point,         //현재 미노 좌표
     pub current_mino: Option<MinoShape>, //현재 미노 형태
 
-    pub freezed: bool,                   //현재 미노가 보드에 붙었는지?
-    pub lose: bool,                      //현재 게임 오버 여부
+    pub freezed: bool, //현재 미노가 보드에 붙었는지?
+    pub lose: bool,    //현재 게임 오버 여부
 
     pub next_count: i32,          // 넥스트 개수
     pub bag: VecDeque<MinoShape>, // 현재 가방
@@ -124,7 +124,7 @@ impl GameInfo {
         if let Some(current_mino) = self.current_mino {
             // 블럭 고정 후 현재 미노에서 제거
             self.tetris_board
-                .write_current_mino(current_mino, self.current_position);
+                .write_current_mino(current_mino.cells, self.current_position);
             self.current_mino = None;
 
             self.hold_used = false;
@@ -198,28 +198,32 @@ impl GameInfo {
             let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
             let mut next_shape = current_mino.cells.clone();
 
-
             rotate_left(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
-                current_mino.rotation_count = (current_mino.rotation_count+3)%4;
+                current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape;
+            } else {
+                for i in 0..4 {
+                    let mut next_position = self.current_position.clone();
+                    if real_length == 3 {
+                        next_position = next_position.move_xy(
+                            KICK_INDEX_3BY3[4 + current_mino.rotation_count][i][0],
+                            KICK_INDEX_3BY3[4 + current_mino.rotation_count][i][1],
+                        ); // 4, 5, 6, 7 => 03, 10, 21, 32
+                    } else if real_length == 4 {
+                        next_position = next_position.move_xy(
+                            KICK_INDEX_I[4 + current_mino.rotation_count][i][0],
+                            KICK_INDEX_I[4 + current_mino.rotation_count][i][1],
+                        );
+                    }
+                    if valid_mino(&self.tetris_board, &next_shape, next_position) {
+                        current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
+                        self.current_position = next_position;
+                        current_mino.cells = next_shape;
+                        break;
+                    }
+                }
             }
-            else {for i in 0..4 {
-                let mut next_position = self.current_position.clone();
-                if real_length == 3 {
-                    next_position = next_position.move_xy(KICK_INDEX_3BY3[4+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[4+current_mino.rotation_count][i][1]); // 4, 5, 6, 7 => 03, 10, 21, 32
-                }
-                else if real_length == 4 {
-                    next_position = next_position.move_xy(KICK_INDEX_I[4+current_mino.rotation_count][i][0], KICK_INDEX_I[4+current_mino.rotation_count][i][1]);
-                }
-                if valid_mino(&self.tetris_board, &next_shape, next_position) {
-                    current_mino.rotation_count = (current_mino.rotation_count+3)%4;
-                    self.current_position = next_position;
-                    current_mino.cells = next_shape;
-                    break;
-                }
-            }}
-
         }
     }
 
@@ -234,35 +238,39 @@ impl GameInfo {
             let mut next_shape = current_mino.cells.clone();
             rotate_right(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
-                current_mino.rotation_count = (current_mino.rotation_count+1)%4;
+                current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
+            } else {
+                for i in 0..4 {
+                    let mut next_position = self.current_position.clone();
+                    if real_length == 3 {
+                        next_position = next_position.move_xy(
+                            KICK_INDEX_3BY3[0 + current_mino.rotation_count][i][0],
+                            KICK_INDEX_3BY3[0 + current_mino.rotation_count][i][1],
+                        ); // 0, 1, 2, 3 => 01, 12, 23, 30
+                    } else if real_length == 4 {
+                        next_position = next_position.move_xy(
+                            KICK_INDEX_I[0 + current_mino.rotation_count][i][0],
+                            KICK_INDEX_I[0 + current_mino.rotation_count][i][1],
+                        );
+                    }
+                    if valid_mino(&self.tetris_board, &next_shape, next_position) {
+                        current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
+                        self.current_position = next_position;
+                        current_mino.cells = next_shape;
+                        break;
+                    }
+                }
             }
-            else {for i in 0..4 {
-                let mut next_position = self.current_position.clone();
-                if real_length == 3 {
-                    next_position = next_position.move_xy(KICK_INDEX_3BY3[0+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[0+current_mino.rotation_count][i][1]); // 0, 1, 2, 3 => 01, 12, 23, 30
-                }
-                else if real_length == 4 {
-                    next_position = next_position.move_xy(KICK_INDEX_I[0+current_mino.rotation_count][i][0], KICK_INDEX_I[0+current_mino.rotation_count][i][1]);
-                }
-                if valid_mino(&self.tetris_board, &next_shape, next_position) {
-                    current_mino.rotation_count = (current_mino.rotation_count+1)%4;
-                    self.current_position = next_position;
-                    current_mino.cells = next_shape;
-                    break;
-                }
-
-            }}
-    }}
+        }
+    }
 
     pub fn soft_drop(&mut self) {
         self.tick();
     }
 
-    pub fn hard_drop(&mut self) {
-        let current_mino = self.current_mino;
-
-        match current_mino {
+    pub fn get_hard_drop_position(&self) -> Option<Point> {
+        match self.current_mino {
             Some(current_mino) => {
                 let current_position = self.current_position;
                 let mut next_position = current_position.add_y(1);
@@ -275,7 +283,18 @@ impl GameInfo {
                     }
                 }
 
-                self.current_position = next_position;
+                Some(next_position)
+            }
+            None => None,
+        }
+    }
+
+    pub fn hard_drop(&mut self) {
+        let position = self.get_hard_drop_position();
+
+        match position {
+            Some(position) => {
+                self.current_position = position;
 
                 self.fix_current_mino();
 
