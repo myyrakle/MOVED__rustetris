@@ -205,7 +205,13 @@ impl GameInfo {
                 current_mino.cells = next_shape;
             }
             else {for i in 0..4 {
-                let next_position = self.current_position.clone().move_xy(KICK_INDEX_3BY3[4+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[4+current_mino.rotation_count][i][1]);
+                let mut next_position = self.current_position.clone();
+                if real_length == 3 {
+                    next_position = next_position.move_xy(KICK_INDEX_3BY3[4+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[4+current_mino.rotation_count][i][1]);
+                }
+                else if real_length == 4 {
+                    next_position = next_position.move_xy(KICK_INDEX_I[4+current_mino.rotation_count][i][0], KICK_INDEX_I[4+current_mino.rotation_count][i][1]);
+                }
                 if valid_mino(&self.tetris_board, &next_shape, next_position) {
                     current_mino.rotation_count = (current_mino.rotation_count+3)%4;
                     self.current_position = next_position;
@@ -228,20 +234,26 @@ impl GameInfo {
             let mut next_shape = current_mino.cells.clone();
             rotate_right(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
-                current_mino.cells = next_shape;
                 current_mino.rotation_count = (current_mino.rotation_count+1)%4;
+                current_mino.cells = next_shape;
             }
             else {for i in 0..4 {
-                let next_position = self.current_position.clone().move_xy(KICK_INDEX_3BY3[0+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[0+current_mino.rotation_count][i][1]);
-                    if valid_mino(&self.tetris_board, &next_shape, next_position) {
-                        current_mino.rotation_count = (current_mino.rotation_count+1)%4;
-                        self.current_position = next_position;
-                        current_mino.cells = next_shape;
-                        break;
-                    }
+                let mut next_position = self.current_position.clone();
+                if real_length == 3 {
+                    next_position = next_position.move_xy(KICK_INDEX_3BY3[0+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[0+current_mino.rotation_count][i][1]);
                 }
+                else if real_length == 4 {
+                    next_position = next_position.move_xy(KICK_INDEX_I[0+current_mino.rotation_count][i][0], KICK_INDEX_I[0+current_mino.rotation_count][i][1]);
+                }
+                if valid_mino(&self.tetris_board, &next_shape, next_position) {
+                    current_mino.rotation_count = (current_mino.rotation_count+1)%4;
+                    self.current_position = next_position;
+                    current_mino.cells = next_shape;
+                    break;
+                }
+
             }}
-    }
+    }}
 
     pub fn soft_drop(&mut self) {
         self.tick();
