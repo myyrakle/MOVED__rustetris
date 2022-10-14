@@ -52,6 +52,7 @@ impl From<i32> for Mino {
 pub struct MinoShape {
     pub mino: Mino,
     pub cells: MinoShapeCells,
+    pub rotate_count: i32,
 }
 
 pub type MinoShapeCells = [[TetrisCell; 4]; 4];

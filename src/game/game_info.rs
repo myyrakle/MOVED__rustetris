@@ -6,7 +6,7 @@ use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use crate::util::{random, rotate_right, rotate_left};
+use crate::util::{random, rotate_right, rotate_left, KICK_INDEX_3BY3, KICK_INDEX_I};
 
 use super::Mino;
 
@@ -197,11 +197,23 @@ impl GameInfo {
             let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
 
             let mut next_shape = current_mino.cells.clone();
-            rotate_left(&mut next_shape, real_length);
 
+            rotate_left(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.cells = next_shape;
             }
+            else {for i in 0..4 {
+            rotate_left(&mut next_shape, real_length);
+            let mut next_position = self.current_position.clone().add_x(KICK_INDEX_3BY3[4+rotate_count%4][i][0]);
+                                                    next_position.add_y(KICK_INDEX_3BY3[4+rotate_count%4][i][1]);
+                if valid_mino(&self.tetris_board, &next_shape, &next_position) {
+                    current_mino.cells = next_shape;
+                    self.current_position = next_position;
+                    self.rotate_count += 1;
+                    break;
+                }
+            }}
+
         }
     }
 
@@ -219,7 +231,18 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.cells = next_shape;
             }
-        }
+            else {for i in 0..4 {
+                rotate_left(&mut next_shape, real_length);
+                let mut next_position = self.current_position.clone().add_x(KICK_INDEX_3BY3[0+rotate_count%4][i][0]);
+                                                        next_position.add_y(KICK_INDEX_3BY3[0+rotate_count%4][i][1]);
+                    if valid_mino(&self.tetris_board, &next_shape, &next_position) {
+                        current_mino.cells = next_shape;
+                        self.current_position = next_position;
+                        self.rotate_count += 1;
+                        break;
+                    }
+                }
+            }}
     }
 
     pub fn soft_drop(&mut self) {
