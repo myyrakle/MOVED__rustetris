@@ -49,6 +49,7 @@ where
 }
 
 //SRS TABLE: IF ROTATION FAILS, TRY THESE
+/*
 const kickIndexI = [
     [[-2, 0], [1, 0], [-2, -1], [1, 2]], //0R -> kickIndexI[0][i] for i in (0,1,2,3)
     [[-1, 0], [2, 0], [-1, 2], [2, -1]], //1R
@@ -70,3 +71,4 @@ const kickIndexJLTSZ = [
     [[-1, 0], [-1, -1], [0, 2], [-1, 2]],  //2L
     [[1, 0], [1, 1], [0, -2], [1, -2]]     //3L
 ];
+*/
