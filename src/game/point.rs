@@ -21,4 +21,11 @@ impl Point {
         self.y = self.y + y;
         self
     }
+
+    pub fn move_xy(mut self, x: i64, y: i64) -> Self {
+        self.x = self.x + x;
+        self.y = self.y + y;
+        self
+    }
+
 }

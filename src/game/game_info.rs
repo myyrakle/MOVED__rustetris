@@ -17,6 +17,7 @@ pub struct GameInfo {
     pub on_play: bool,                   //게임 진행중 여부
     pub current_position: Point,         //현재 미노 좌표
     pub current_mino: Option<MinoShape>, //현재 미노 형태
+
     pub freezed: bool,                   //현재 미노가 보드에 붙었는지?
     pub lose: bool,                      //현재 게임 오버 여부
 
@@ -195,21 +196,20 @@ impl GameInfo {
             }
 
             let real_length = if current_mino.mino == Mino::I { 4 } else { 3 };
-
             let mut next_shape = current_mino.cells.clone();
+
 
             rotate_left(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
+                current_mino.rotation_count = (current_mino.rotation_count+3)%4;
                 current_mino.cells = next_shape;
             }
             else {for i in 0..4 {
-            rotate_left(&mut next_shape, real_length);
-            let mut next_position = self.current_position.clone().add_x(KICK_INDEX_3BY3[4+rotate_count%4][i][0]);
-                                                    next_position.add_y(KICK_INDEX_3BY3[4+rotate_count%4][i][1]);
-                if valid_mino(&self.tetris_board, &next_shape, &next_position) {
-                    current_mino.cells = next_shape;
+                let next_position = self.current_position.clone().move_xy(KICK_INDEX_3BY3[4+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[4+current_mino.rotation_count][i][1]);
+                if valid_mino(&self.tetris_board, &next_shape, next_position) {
+                    current_mino.rotation_count = (current_mino.rotation_count+3)%4;
                     self.current_position = next_position;
-                    self.rotate_count += 1;
+                    current_mino.cells = next_shape;
                     break;
                 }
             }}
@@ -227,18 +227,16 @@ impl GameInfo {
 
             let mut next_shape = current_mino.cells.clone();
             rotate_right(&mut next_shape, real_length);
-
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.cells = next_shape;
+                current_mino.rotation_count = (current_mino.rotation_count+1)%4;
             }
             else {for i in 0..4 {
-                rotate_left(&mut next_shape, real_length);
-                let mut next_position = self.current_position.clone().add_x(KICK_INDEX_3BY3[0+rotate_count%4][i][0]);
-                                                        next_position.add_y(KICK_INDEX_3BY3[0+rotate_count%4][i][1]);
-                    if valid_mino(&self.tetris_board, &next_shape, &next_position) {
-                        current_mino.cells = next_shape;
+                let next_position = self.current_position.clone().move_xy(KICK_INDEX_3BY3[0+current_mino.rotation_count][i][0], KICK_INDEX_3BY3[0+current_mino.rotation_count][i][1]);
+                    if valid_mino(&self.tetris_board, &next_shape, next_position) {
+                        current_mino.rotation_count = (current_mino.rotation_count+1)%4;
                         self.current_position = next_position;
-                        self.rotate_count += 1;
+                        current_mino.cells = next_shape;
                         break;
                     }
                 }

@@ -52,7 +52,7 @@ impl From<i32> for Mino {
 pub struct MinoShape {
     pub mino: Mino,
     pub cells: MinoShapeCells,
-    pub rotate_count: i32,
+    pub rotation_count: usize,
 }
 
 pub type MinoShapeCells = [[TetrisCell; 4]; 4];
@@ -80,6 +80,7 @@ impl MinoShape {
     // □□□□
     pub const I: Self = Self {
         mino: Mino::I,
+        rotation_count: 0, 
         cells: [
             [
                 TetrisCell::Empty,
@@ -114,6 +115,8 @@ impl MinoShape {
     // □□□□
     pub const L: Self = Self {
         mino: Mino::L,
+        rotation_count: 0, 
+
         cells: [
             [
                 TetrisCell::Empty,
@@ -148,6 +151,8 @@ impl MinoShape {
     // □□□□
     pub const J: MinoShape = Self {
         mino: Mino::J,
+        rotation_count: 0, 
+
         cells: [
             [
                 J_DEFAULT_COLOR,
@@ -182,6 +187,8 @@ impl MinoShape {
     // □□□□
     pub const O: Self = Self {
         mino: Mino::O,
+        rotation_count: 0, 
+
         cells: [
             [
                 TetrisCell::Empty,
@@ -216,6 +223,8 @@ impl MinoShape {
     // □□□□
     pub const S: Self = Self {
         mino: Mino::S,
+        rotation_count: 0, 
+
         cells: [
             [
                 TetrisCell::Empty,
@@ -250,6 +259,8 @@ impl MinoShape {
     // □□□□
     pub const Z: Self = Self {
         mino: Mino::Z,
+        rotation_count: 0, 
+
         cells: [
             [
                 Z_DEFAULT_COLOR,
@@ -284,6 +295,8 @@ impl MinoShape {
     // □□□□
     pub const T: Self = Self {
         mino: Mino::T,
+        rotation_count: 0, 
+
         cells: [
             [
                 TetrisCell::Empty,
@@ -318,6 +331,8 @@ impl MinoShape {
     // □□□□
     pub const NONE: Self = Self {
         mino: Mino::ETC,
+        rotation_count: 0, 
+
         cells: [
             [
                 TetrisCell::Empty,
