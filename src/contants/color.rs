@@ -1,4 +1,4 @@
-pub const BOARD_DEFAULT_COLOR: &str = "#eeeef1";
+pub const BOARD_DEFAULT_COLOR: &str = "#f4f3f5";
 pub const BOARD_STROKE_DEFAULT_COLOR: &str = "#000000";
 
 pub const NEXT_DEFAULT_COLOR: &str = "#212121";

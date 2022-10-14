@@ -19,8 +19,8 @@ impl TetrisBoard {
             .clone()
             .into_iter()
             .flatten()
-            .map(|e| e as i32)
-            .collect::<Vec<i32>>()
+            .map(|e| e.into_code())
+            .collect::<Vec<_>>()
     }
 
     pub fn from_unfold(

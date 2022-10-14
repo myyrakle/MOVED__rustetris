@@ -152,6 +152,12 @@ impl GameManager {
                             tetris_board
                                 .write_current_mino(current_mino.cells, game_info.current_position);
 
+                            let ghost_position = game_info.get_hard_drop_position().unwrap();
+                            tetris_board.write_current_mino(
+                                current_mino.clone().to_ghost().cells,
+                                ghost_position,
+                            );
+
                             tetris_board
                         }
                         None => game_info.tetris_board.clone(),

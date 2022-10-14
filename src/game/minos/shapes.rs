@@ -77,11 +77,13 @@ impl MinoShape {
     pub fn to_ghost(mut self) -> Self {
         for row in &mut self.cells {
             for cell in row {
-                if cell != &TetrisCell::Empty {
+                if !cell.is_empty() {
+                    log::error!("되나");
                     *cell = TetrisCell::Ghost;
                 }
             }
         }
+
         self
     }
 }

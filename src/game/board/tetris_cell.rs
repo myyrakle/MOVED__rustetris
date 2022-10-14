@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TetrisCell {
     Empty = "white",
-    Ghost = "d3d3d3",
+    Ghost = "#d3d3d3",
     Red = "red",
     Green = "green",
     Blue = "blue",
@@ -44,6 +44,21 @@ impl TetrisCell {
         self == &Self::Empty
     }
 
+    pub fn into_code(&self) -> i32 {
+        match self {
+            Self::Empty => 0,
+            Self::Red => 1,
+            Self::Green => 2,
+            Self::Blue => 3,
+            Self::Purple => 4,
+            Self::Cyan => 5,
+            Self::Orange => 6,
+            Self::Yellow => 7,
+            Self::Ghost => 8,
+            _ => 0,
+        }
+    }
+
     pub fn to_color(&self) -> &str {
         match self {
             Self::Empty => "white",
@@ -54,8 +69,8 @@ impl TetrisCell {
             Self::Cyan => "cyan",
             Self::Orange => "orange",
             Self::Yellow => "yellow",
-            Self::Ghost => "d3d3d3",
-            _ => "while",
+            Self::Ghost => "#d3d3d3",
+            _ => "white",
         }
     }
 }
