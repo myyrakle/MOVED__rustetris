@@ -6,7 +6,7 @@ use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
-use crate::util::{random, rotate_right, rotate left};
+use crate::util::{random, rotate_right, rotate_left};
 
 use super::Mino;
 
