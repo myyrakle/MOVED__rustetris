@@ -208,12 +208,12 @@ impl GameInfo {
                     if real_length == 3 {
                         next_position = next_position.move_xy(
                             KICK_INDEX_3BY3[4 + current_mino.rotation_count][i][0],
-                            KICK_INDEX_3BY3[4 + current_mino.rotation_count][i][1],
+                            -KICK_INDEX_3BY3[4 + current_mino.rotation_count][i][1],
                         ); // 4, 5, 6, 7 => 03, 10, 21, 32
                     } else if real_length == 4 {
                         next_position = next_position.move_xy(
                             KICK_INDEX_I[4 + current_mino.rotation_count][i][0],
-                            KICK_INDEX_I[4 + current_mino.rotation_count][i][1],
+                            -KICK_INDEX_I[4 + current_mino.rotation_count][i][1],
                         );
                     }
                     if valid_mino(&self.tetris_board, &next_shape, next_position) {
@@ -246,12 +246,12 @@ impl GameInfo {
                     if real_length == 3 {
                         next_position = next_position.move_xy(
                             KICK_INDEX_3BY3[0 + current_mino.rotation_count][i][0],
-                            KICK_INDEX_3BY3[0 + current_mino.rotation_count][i][1],
+                            -KICK_INDEX_3BY3[0 + current_mino.rotation_count][i][1],
                         ); // 0, 1, 2, 3 => 01, 12, 23, 30
                     } else if real_length == 4 {
                         next_position = next_position.move_xy(
                             KICK_INDEX_I[0 + current_mino.rotation_count][i][0],
-                            KICK_INDEX_I[0 + current_mino.rotation_count][i][1],
+                            -KICK_INDEX_I[0 + current_mino.rotation_count][i][1],
                         );
                     }
                     if valid_mino(&self.tetris_board, &next_shape, next_position) {
