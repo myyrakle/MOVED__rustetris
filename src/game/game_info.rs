@@ -36,6 +36,8 @@ pub struct GameInfo {
 
     pub combo: Option<i32>, // 현재 콤보 (제로콤보는 None, 지웠을 경우 0부터 시작)
     pub back_to_back: Option<i32>, // 현재 백투백 스택 (제로는 None, 지웠을 경우 0부터 시작)
+
+    pub message: Option<String>, // 렌더링할 메세지
 }
 
 impl GameInfo {
@@ -81,6 +83,7 @@ impl GameInfo {
             hold_used: false,
             back_to_back: None,
             combo: None,
+            message: None,
         }
     }
 

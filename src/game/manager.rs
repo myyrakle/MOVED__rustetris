@@ -135,6 +135,24 @@ impl GameManager {
                     write_text("score", game_info.record.score.to_string());
                     write_text("pc", game_info.record.perfect_clear.to_string());
                     write_text("quad", game_info.record.quad.to_string());
+
+                    if let Some(back_to_back) = game_info.back_to_back {
+                        if back_to_back == 0 {
+                            write_text("backtoback", "Back2Back".into());
+                        } else {
+                            write_text("backtoback", format!("Back2Back {}", back_to_back));
+                        }
+                    }
+
+                    if let Some(combo) = game_info.combo {
+                        if combo > 0 {
+                            write_text("combo", format!("Combo {}", combo));
+                        }
+                    }
+
+                    if let Some(message) = game_info.message.clone() {
+                        write_text("combo", message);
+                    }
                 }
             });
 
