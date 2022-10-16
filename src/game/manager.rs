@@ -5,13 +5,15 @@ use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 
+use crate::contants::character::SPECIAL_SPACE;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
-use crate::game::MinoShape;
 use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
+
+use super::SpinType;
 
 pub struct GameManager {
     pub game_info: Arc<Mutex<GameInfo>>,
@@ -43,48 +45,7 @@ impl GameManager {
     }
 
     pub fn with_option(option: GameOption) -> Self {
-        let column_count = option.column_count;
-        let row_count = option.row_count;
-        let board_height = option.board_height;
-        let board_width = option.board_width;
-        let bag_mode = option.bag_mode;
-        let tetris_board = TetrisBoard {
-            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
-            column_count,
-            row_count,
-            board_height,
-            board_width,
-        };
-
-        let mino_list = vec![
-            MinoShape::I,
-            MinoShape::L,
-            MinoShape::J,
-            MinoShape::S,
-            MinoShape::Z,
-            MinoShape::O,
-            MinoShape::T,
-        ];
-
-        let game_info = GameInfo {
-            record: Default::default(),
-            render_interval: 200,
-            tick_interval: 1000,
-            current_position: Default::default(),
-            current_mino: None,
-            freezed: false,
-            next_count: 5,
-            bag: VecDeque::new(),
-            tetris_board,
-            on_play: false,
-            lose: false,
-            tick_interval_handler: None,
-            render_interval_handler: None,
-            bag_mode,
-            mino_list,
-            hold: None,
-            hold_used: false,
-        };
+        let game_info = GameInfo::with_option(option);
 
         let game_info = Arc::new(Mutex::new(game_info));
 
@@ -115,8 +76,6 @@ impl GameManager {
             let tick_interval = game_info.lock().ok().unwrap().tick_interval;
 
             let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
-                //log::info!("TICK");
-
                 let mut game_info = game_info.lock().unwrap();
 
                 game_info.tick();
@@ -179,6 +138,30 @@ impl GameManager {
                     write_text("score", game_info.record.score.to_string());
                     write_text("pc", game_info.record.perfect_clear.to_string());
                     write_text("quad", game_info.record.quad.to_string());
+
+                    if let Some(back2back) = game_info.back2back {
+                        if back2back == 0 {
+                            write_text("back2back", "Back2Back".into());
+                        } else {
+                            write_text("back2back", format!("Back2Back {}", back2back));
+                        }
+                    } else {
+                        write_text("back2back", SPECIAL_SPACE.into());
+                    }
+
+                    if let Some(combo) = game_info.combo {
+                        if combo > 0 {
+                            write_text("combo", format!("Combo {}", combo));
+                        }
+                    } else {
+                        write_text("combo", SPECIAL_SPACE.into());
+                    }
+
+                    if let Some(message) = game_info.message.clone() {
+                        write_text("message", message);
+                    } else {
+                        write_text("message", SPECIAL_SPACE.into());
+                    }
                 }
             });
 
@@ -208,6 +191,7 @@ impl GameManager {
         self.init_bag()?;
         self.init_board()?;
         self.init_score()?;
+        self.init_context()?;
 
         Some(())
     }
@@ -225,6 +209,18 @@ impl GameManager {
             board_height: game_info.tetris_board.board_height,
             board_width: game_info.tetris_board.board_width,
         };
+
+        Some(())
+    }
+
+    // 컨텍스트 초기화
+    pub fn init_context(&self) -> Option<()> {
+        let mut game_info = self.game_info.lock().ok().unwrap();
+
+        game_info.back2back = None;
+        game_info.combo = None;
+        game_info.in_spin = SpinType::None;
+        game_info.message = None;
 
         Some(())
     }
