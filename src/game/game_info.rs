@@ -1,7 +1,5 @@
 use std::collections::VecDeque;
 
-use gloo_timers::callback::Interval;
-
 use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
@@ -28,9 +26,6 @@ pub struct GameInfo {
 
     pub render_interval: u64, //렌더링 시간간격(밀리초)
     pub tick_interval: u64,   //틱당 시간간격(밀리초)
-
-    pub tick_interval_handler: Option<Interval>,
-    pub render_interval_handler: Option<Interval>,
 
     pub bag_mode: BagType, //가방 순환 규칙 사용여부 (false면 완전 랜덤. true면 한 묶음에서 랜덤)
     pub mino_list: Vec<MinoShape>, //미노 리스트

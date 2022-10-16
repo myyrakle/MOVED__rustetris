@@ -78,8 +78,6 @@ impl GameManager {
             tetris_board,
             on_play: false,
             lose: false,
-            tick_interval_handler: None,
-            render_interval_handler: None,
             bag_mode,
             mino_list,
             hold: None,
