@@ -137,14 +137,14 @@ impl GameManager {
                     write_text("pc", game_info.record.perfect_clear.to_string());
                     write_text("quad", game_info.record.quad.to_string());
 
-                    if let Some(back_to_back) = game_info.back_to_back {
-                        if back_to_back == 0 {
-                            write_text("backtoback", "Back2Back".into());
+                    if let Some(back2back) = game_info.back2back {
+                        if back2back == 0 {
+                            write_text("back2back", "Back2Back".into());
                         } else {
-                            write_text("backtoback", format!("Back2Back {}", back_to_back));
+                            write_text("back2back", format!("Back2Back {}", back2back));
                         }
                     } else {
-                        write_text("backtoback", SPECIAL_SPACE.into());
+                        write_text("back2back", SPECIAL_SPACE.into());
                     }
 
                     if let Some(combo) = game_info.combo {

@@ -7,7 +7,7 @@ use crate::game::{
 use crate::options::game_option::GameOption;
 use crate::util::{random, rotate_left, rotate_right, KICK_INDEX_3BY3, KICK_INDEX_I};
 
-use super::Mino;
+use super::{calculate_score, Mino};
 
 #[derive(Debug)]
 pub struct GameInfo {
@@ -34,8 +34,8 @@ pub struct GameInfo {
     pub hold: Option<MinoShape>, // 홀드한 미노
     pub hold_used: bool,         // 현재 홀드 사용권을 소모했는지 여부
 
-    pub combo: Option<i32>, // 현재 콤보 (제로콤보는 None, 지웠을 경우 0부터 시작)
-    pub back_to_back: Option<i32>, // 현재 백투백 스택 (제로는 None, 지웠을 경우 0부터 시작)
+    pub combo: Option<u32>, // 현재 콤보 (제로콤보는 None, 지웠을 경우 0부터 시작)
+    pub back2back: Option<u32>, // 현재 백투백 스택 (제로는 None, 지웠을 경우 0부터 시작)
 
     pub message: Option<String>, // 렌더링할 메세지
 }
@@ -81,7 +81,7 @@ impl GameInfo {
             mino_list,
             hold: None,
             hold_used: false,
-            back_to_back: None,
+            back2back: None,
             combo: None,
             message: None,
         }
@@ -145,20 +145,15 @@ impl GameInfo {
         let is_perfect = self.tetris_board.unfold().iter().all(|e| e == &0);
 
         if is_perfect {
-            self.record.score += 1000;
             self.record.perfect_clear += 1;
         }
 
-        match line {
-            1 => self.record.score += 10,
-            2 => self.record.score += 20,
-            3 => self.record.score += 30,
-            4 => {
-                self.record.score += 100;
-                self.record.quad += 1;
-            }
-            _ => {}
+        if line == 4 {
+            self.record.quad += 1;
         }
+
+        let score = calculate_score(line, is_perfect, self.combo, SpinType::None, self.back2back);
+        self.record.score = score;
 
         ClearInfo {
             line,
