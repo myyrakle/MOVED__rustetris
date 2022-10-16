@@ -43,46 +43,7 @@ impl GameManager {
     }
 
     pub fn with_option(option: GameOption) -> Self {
-        let column_count = option.column_count;
-        let row_count = option.row_count;
-        let board_height = option.board_height;
-        let board_width = option.board_width;
-        let bag_mode = option.bag_mode;
-        let tetris_board = TetrisBoard {
-            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
-            column_count,
-            row_count,
-            board_height,
-            board_width,
-        };
-
-        let mino_list = vec![
-            MinoShape::I,
-            MinoShape::L,
-            MinoShape::J,
-            MinoShape::S,
-            MinoShape::Z,
-            MinoShape::O,
-            MinoShape::T,
-        ];
-
-        let game_info = GameInfo {
-            record: Default::default(),
-            render_interval: 200,
-            tick_interval: 1000,
-            current_position: Default::default(),
-            current_mino: None,
-            freezed: false,
-            next_count: 5,
-            bag: VecDeque::new(),
-            tetris_board,
-            on_play: false,
-            lose: false,
-            bag_mode,
-            mino_list,
-            hold: None,
-            hold_used: false,
-        };
+        let game_info = GameInfo::with_option(option);
 
         let game_info = Arc::new(Mutex::new(game_info));
 
