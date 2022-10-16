@@ -13,6 +13,8 @@ use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
 
+use super::SpinType;
+
 pub struct GameManager {
     pub game_info: Arc<Mutex<GameInfo>>,
 }
@@ -189,6 +191,7 @@ impl GameManager {
         self.init_bag()?;
         self.init_board()?;
         self.init_score()?;
+        self.init_context()?;
 
         Some(())
     }
@@ -206,6 +209,18 @@ impl GameManager {
             board_height: game_info.tetris_board.board_height,
             board_width: game_info.tetris_board.board_width,
         };
+
+        Some(())
+    }
+
+    // 컨텍스트 초기화
+    pub fn init_context(&self) -> Option<()> {
+        let mut game_info = self.game_info.lock().ok().unwrap();
+
+        game_info.back2back = None;
+        game_info.combo = None;
+        game_info.in_spin = SpinType::None;
+        game_info.message = None;
 
         Some(())
     }

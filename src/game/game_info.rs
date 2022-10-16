@@ -220,7 +220,7 @@ impl GameInfo {
         }
 
         let score = calculate_score(line, is_perfect, self.combo, SpinType::None, self.back2back);
-        self.record.score = score;
+        self.record.score += score;
 
         self.after_clear();
 
