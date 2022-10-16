@@ -5,6 +5,7 @@ use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
 use wasm_bindgen_futures::spawn_local;
 
+use crate::contants::character::SPECIAL_SPACE;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
@@ -142,16 +143,22 @@ impl GameManager {
                         } else {
                             write_text("backtoback", format!("Back2Back {}", back_to_back));
                         }
+                    } else {
+                        write_text("backtoback", SPECIAL_SPACE.into());
                     }
 
                     if let Some(combo) = game_info.combo {
                         if combo > 0 {
                             write_text("combo", format!("Combo {}", combo));
                         }
+                    } else {
+                        write_text("combo", SPECIAL_SPACE.into());
                     }
 
                     if let Some(message) = game_info.message.clone() {
-                        write_text("combo", message);
+                        write_text("message", message);
+                    } else {
+                        write_text("message", SPECIAL_SPACE.into());
                     }
                 }
             });

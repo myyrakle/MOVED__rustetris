@@ -69,9 +69,9 @@ pub fn game_box() -> Html {
                 </div>
 
                 <div class="flex flex-col justify-between mb-[80px]">
-                    <div id="combo" class="font-mono text-base text-center">{""}</div>
-                    <div id="backtoback" class="font-mono text-base text-center">{""}</div>
-                    <div id="message" class="font-mono text-base text-center">{""}</div>
+                    <div id="combo" class="font-mono text-base text-center">{" "}</div>
+                    <div id="backtoback" class="font-mono text-base text-center">{" "}</div>
+                    <div id="message" class="font-mono text-base text-center">{" "}</div>
                 </div>
 
                 <div class="flex flex-col justify-between mb-[30px]">
