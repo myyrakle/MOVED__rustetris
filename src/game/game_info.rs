@@ -4,6 +4,7 @@ use crate::game::{
     valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
 };
 
+use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::util::{random, rotate_left, rotate_right, KICK_INDEX_3BY3, KICK_INDEX_I};
 
@@ -493,6 +494,6 @@ impl GameInfo {
         self.on_play = false;
         self.lose = true;
         self.current_mino = None;
-        self.message = Some("Game Over".into());
+        write_text("message", "Game Over".into());
     }
 }
