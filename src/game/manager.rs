@@ -8,7 +8,6 @@ use wasm_bindgen_futures::spawn_local;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
-use crate::game::MinoShape;
 use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
@@ -74,8 +73,6 @@ impl GameManager {
             let tick_interval = game_info.lock().ok().unwrap().tick_interval;
 
             let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
-                //log::info!("TICK");
-
                 let mut game_info = game_info.lock().unwrap();
 
                 game_info.tick();

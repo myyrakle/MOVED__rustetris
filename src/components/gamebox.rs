@@ -63,9 +63,15 @@ pub fn game_box() -> Html {
             GameManager::empty_render();
         })}>
             <div class="flex flex-col m-5 justify-start">
-                <div class="mb-[270px]">
+                <div class="mb-[150px]">
                     <p class="font-mono text-2xl text-center">{"Hold"}</p>
                     <canvas id="hold-canvas" class="" width="120" height="120"></canvas>
+                </div>
+
+                <div class="flex flex-col justify-between mb-[80px]">
+                    <div id="combo" class="font-mono text-base text-center">{""}</div>
+                    <div id="backtoback" class="font-mono text-base text-center">{""}</div>
+                    <div id="message" class="font-mono text-base text-center">{""}</div>
                 </div>
 
                 <div class="flex flex-col justify-between mb-[30px]">
