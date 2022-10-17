@@ -42,6 +42,12 @@ pub struct GameInfo {
     pub message: Option<String>, // 렌더링할 메세지
 
     pub in_spin: SpinType, // 현재 스핀 상태 확인
+
+    pub lock_delay: u32, // 바닥에 닿을때 고정하기까지의 딜레이. 밀리초 단위.
+
+    pub sdf: u32, // soft drop fast. 소프트 드랍 속도
+    pub das: u32, // delay auto shift. 밀리초 단위.
+    pub arr: u32, // auto repeat shift. 좌우 이동 클릭시,
 }
 
 impl GameInfo {
@@ -89,6 +95,10 @@ impl GameInfo {
             combo: None,
             message: None,
             in_spin: SpinType::None,
+            lock_delay: 500,
+            das: 300,
+            sdf: 0,
+            arr: 0,
         }
     }
 
