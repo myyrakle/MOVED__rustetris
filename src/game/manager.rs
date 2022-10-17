@@ -1,4 +1,6 @@
+use std::cell::RefCell;
 use std::collections::VecDeque;
+use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
 use futures_util::stream::StreamExt;
@@ -95,89 +97,81 @@ impl GameManager {
             }
         });
 
-        let closure = Closure::new(|| {});
-        request_animation_frame(&closure);
-
-        // 렌더링 스레드
         let game_info = Arc::clone(&self.game_info);
         spawn_local(async move {
-            let game_info = game_info;
-            let _game_info = Arc::clone(&game_info);
+            let f = Rc::new(RefCell::new(None));
+            let g = f.clone();
 
-            let render_interval = game_info.lock().ok().unwrap().render_interval;
-
-            let mut future_list = IntervalStream::new(render_interval as u32).map(move |_| {
+            *g.borrow_mut() = Some(Closure::new(move || {
                 let game_info = game_info.lock().unwrap();
 
-                if game_info.on_play {
-                    let tetris_board = match game_info.current_mino {
-                        Some(current_mino) => {
-                            let mut tetris_board = game_info.tetris_board.clone();
-                            tetris_board
-                                .write_current_mino(current_mino.cells, game_info.current_position);
-
-                            let ghost_position = game_info.get_hard_drop_position().unwrap();
-                            tetris_board.write_current_mino(
-                                current_mino.clone().to_ghost().cells,
-                                ghost_position,
-                            );
-
-                            tetris_board
-                        }
-                        None => game_info.tetris_board.clone(),
-                    };
-
-                    wasm_bind::render_board(
-                        tetris_board.unfold(),
-                        tetris_board.board_width,
-                        tetris_board.board_height,
-                        tetris_board.column_count,
-                        tetris_board.row_count,
-                    );
-
-                    let next = game_info.bag.iter().map(|e| e.mino.into()).collect();
-                    wasm_bind::render_next(next, 120, 520, 6, 26);
-
-                    wasm_bind::render_hold(game_info.hold.map(|e| e.mino.into()), 120, 120, 6, 6);
-
-                    write_text("score", game_info.record.score.to_string());
-                    write_text("pc", game_info.record.perfect_clear.to_string());
-                    write_text("quad", game_info.record.quad.to_string());
-
-                    if let Some(back2back) = game_info.back2back {
-                        if back2back != 0 {
-                            write_text("back2back", format!("Back2Back {}", back2back));
-                        }
-                    } else {
-                        write_text("back2back", SPECIAL_SPACE.into());
-                    }
-
-                    if let Some(combo) = game_info.combo {
-                        if combo > 0 {
-                            write_text("combo", format!("Combo {}", combo));
-                        }
-                    } else {
-                        write_text("combo", SPECIAL_SPACE.into());
-                    }
-
-                    if let Some(message) = game_info.message.clone() {
-                        write_text("message", message);
-                    } else {
-                        write_text("message", SPECIAL_SPACE.into());
-                    }
+                if !game_info.on_play {
+                    // Drop our handle to this closure so that it will get cleaned
+                    // up once we return.
+                    let _ = f.borrow_mut().take();
+                    return;
                 }
-            });
 
-            let game_info = _game_info;
+                let tetris_board = match game_info.current_mino {
+                    Some(current_mino) => {
+                        let mut tetris_board = game_info.tetris_board.clone();
+                        tetris_board
+                            .write_current_mino(current_mino.cells, game_info.current_position);
 
-            loop {
-                if game_info.lock().unwrap().on_play {
-                    let next = future_list.next();
-                    next.await;
+                        let ghost_position = game_info.get_hard_drop_position().unwrap();
+                        tetris_board.write_current_mino(
+                            current_mino.clone().to_ghost().cells,
+                            ghost_position,
+                        );
+
+                        tetris_board
+                    }
+                    None => game_info.tetris_board.clone(),
+                };
+
+                wasm_bind::render_board(
+                    tetris_board.unfold(),
+                    tetris_board.board_width,
+                    tetris_board.board_height,
+                    tetris_board.column_count,
+                    tetris_board.row_count,
+                );
+
+                let next = game_info.bag.iter().map(|e| e.mino.into()).collect();
+                wasm_bind::render_next(next, 120, 520, 6, 26);
+
+                wasm_bind::render_hold(game_info.hold.map(|e| e.mino.into()), 120, 120, 6, 6);
+
+                write_text("score", game_info.record.score.to_string());
+                write_text("pc", game_info.record.perfect_clear.to_string());
+                write_text("quad", game_info.record.quad.to_string());
+
+                if let Some(back2back) = game_info.back2back {
+                    if back2back != 0 {
+                        write_text("back2back", format!("Back2Back {}", back2back));
+                    }
                 } else {
-                    break;
+                    write_text("back2back", SPECIAL_SPACE.into());
                 }
-            }
+
+                if let Some(combo) = game_info.combo {
+                    if combo > 0 {
+                        write_text("combo", format!("Combo {}", combo));
+                    }
+                } else {
+                    write_text("combo", SPECIAL_SPACE.into());
+                }
+
+                if let Some(message) = game_info.message.clone() {
+                    write_text("message", message);
+                } else {
+                    write_text("message", SPECIAL_SPACE.into());
+                }
+
+                request_animation_frame(f.borrow().as_ref().unwrap());
+            }));
+
+            request_animation_frame(g.borrow().as_ref().unwrap());
         });
 
         Some(())
