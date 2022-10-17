@@ -6,8 +6,9 @@ use crate::game::{MinoShapeCells, Point, TetrisCell};
 
 #[derive(Debug, Clone)]
 pub struct TetrisBoard {
-    pub column_count: u8, //테트리스 열 개수(가로 길이)
-    pub row_count: u8,    //테트리스 행 개수(세로 길이)
+    pub column_count: u32,     //테트리스 열 개수(가로 길이)
+    pub row_count: u32,        //테트리스 행 개수(세로 길이)
+    pub hidden_row_count: u32, // 숨겨진 상단 행 개수
     pub board_width: u32,
     pub board_height: u32,
     pub cells: Vec<Vec<TetrisCell>>,
@@ -27,14 +28,16 @@ impl TetrisBoard {
         unfolded: Vec<i32>,
         board_width: u32,
         board_height: u32,
-        column_count: u8,
-        row_count: u8,
+        column_count: u32,
+        row_count: u32,
+        hidden_row_count: u32,
     ) -> Self {
         Self {
             column_count,
             row_count,
             board_width,
             board_height,
+            hidden_row_count,
             cells: unfolded
                 .into_iter()
                 .map(|e| TetrisCell::try_from(e).unwrap())

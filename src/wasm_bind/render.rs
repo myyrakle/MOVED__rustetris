@@ -24,11 +24,14 @@ pub fn render_board(
     board_unfolded: Vec<i32>,
     board_width: u32,
     board_height: u32,
-    column_count: u8,
-    row_count: u8,
+    column_count: u32,
+    row_count: u32,
+    hidden_row_count: u32,
 ) {
+    let visible_row_count = row_count - hidden_row_count;
+
     let block_width_size = (board_width / column_count as u32) as f64;
-    let block_height_size = (board_height / row_count as u32) as f64;
+    let block_height_size = (board_height / visible_row_count as u32) as f64;
 
     let tetris_board = TetrisBoard::from_unfold(
         board_unfolded,
@@ -36,6 +39,7 @@ pub fn render_board(
         board_height,
         column_count,
         row_count,
+        hidden_row_count,
     );
 
     let document = web_sys::window().unwrap().document().unwrap();
@@ -62,11 +66,13 @@ pub fn render_board(
     for x in 0..column_count {
         let x = x as usize;
 
-        for y in 0..row_count {
+        for y in 0..(visible_row_count) {
             let y = y as usize;
 
-            if tetris_board.cells[y][x] != TetrisCell::Empty {
-                let cell = tetris_board.cells[y][x];
+            let hidden_row_count = hidden_row_count as usize;
+
+            if tetris_board.cells[y + hidden_row_count][x] != TetrisCell::Empty {
+                let cell = tetris_board.cells[y + hidden_row_count][x];
 
                 let x = x as f64 * block_width_size;
                 let y = y as f64 * block_height_size;

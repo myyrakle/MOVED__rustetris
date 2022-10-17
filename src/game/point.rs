@@ -5,8 +5,8 @@ pub struct Point {
 }
 
 impl Point {
-    pub fn start_point(column_count: u8) -> Self {
-        let y = -2;
+    pub fn start_point(column_count: u32) -> Self {
+        let y = 2;
         let x = column_count as i64 / 2 - 2;
 
         Self { x, y }

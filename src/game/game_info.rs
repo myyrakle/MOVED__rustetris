@@ -42,21 +42,32 @@ pub struct GameInfo {
     pub message: Option<String>, // 렌더링할 메세지
 
     pub in_spin: SpinType, // 현재 스핀 상태 확인
+
+    pub lock_delay: u32, // 바닥에 닿을때 고정하기까지의 딜레이. 밀리초 단위.
+
+    pub sdf: u32, // soft drop fast. 소프트 드랍 속도
+    pub das: u32, // delay auto shift. 밀리초 단위.
+    pub arr: u32, // auto repeat shift. 좌우 이동 클릭시,
 }
 
 impl GameInfo {
     pub fn with_option(option: GameOption) -> Self {
         let column_count = option.column_count;
-        let row_count = option.row_count;
+        let hidden_row_count = 4;
+        let row_count = option.row_count + hidden_row_count;
         let board_height = option.board_height;
         let board_width = option.board_width;
         let bag_mode = option.bag_mode;
         let tetris_board = TetrisBoard {
-            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
+            cells: vec![
+                vec![TetrisCell::Empty; column_count as usize];
+                row_count as usize + hidden_row_count as usize
+            ],
             column_count,
             row_count,
             board_height,
             board_width,
+            hidden_row_count,
         };
 
         let mino_list = vec![
@@ -89,6 +100,10 @@ impl GameInfo {
             combo: None,
             message: None,
             in_spin: SpinType::None,
+            lock_delay: 500,
+            das: 300, //미사용
+            sdf: 0,   //미사용
+            arr: 0,   //미사용
         }
     }
 
@@ -338,8 +353,8 @@ impl GameInfo {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape;
                 if current_mino.mino == Mino::T {
-                    // self.in_spin =
-                    //     valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                    self.in_spin =
+                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
                 }
             } else {
                 for i in 0..4 {
@@ -361,8 +376,8 @@ impl GameInfo {
                         current_mino.cells = next_shape;
 
                         if current_mino.mino == Mino::T {
-                            // self.in_spin =
-                            //     valid_tspin(&self.tetris_board, &current_mino, next_position, i);
+                            self.in_spin =
+                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;
@@ -387,8 +402,8 @@ impl GameInfo {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
                 if current_mino.mino == Mino::T {
-                    // self.in_spin =
-                    //     valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                    self.in_spin =
+                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
                 }
             } else {
                 for i in 0..4 {
@@ -409,8 +424,8 @@ impl GameInfo {
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
                         if current_mino.mino == Mino::T {
-                            // self.in_spin =
-                            //     valid_tspin(&self.tetris_board, &current_mino, next_position, i);
+                            self.in_spin =
+                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;
