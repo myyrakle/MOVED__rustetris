@@ -68,3 +68,26 @@ pub fn valid_mino(board: &TetrisBoard, mino: &MinoShapeCells, point: Point) -> b
 
     true
 }
+
+pub fn valid_tspin(board: &TetrisBoard, point: Point) -> bool {
+    let mut corner_fill_count: i64 = 0; // if >=3 return true
+
+    for x in [point.x, point.x + 2] {
+        for y in [point.y, point.y + 2] {
+            //해당 위치가 보드 하좌우를 넘어서는 경우
+            if x < 0 || x >= board.column_count.into() || y >= board.row_count as i64
+            {
+                corner_fill_count += 1;
+                continue;
+            }
+            else {
+                if !board.cells[y as usize][x as usize].is_empty() {
+                    corner_fill_count += 1;
+                    continue;
+                }
+            }
+        }
+    }
+
+    return corner_fill_count>=3;
+}
