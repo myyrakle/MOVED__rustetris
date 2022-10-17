@@ -327,8 +327,8 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape;
-                if current_mino.mino == Mino::T && valid_tspin(&self.tetris_board, self.current_position) {
-                    self.in_spin = SpinType::TSpin; 
+                if current_mino.mino == Mino::T {
+                    self.in_spin = valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0); 
                 }
             } else {
                 for i in 0..4 {
@@ -349,8 +349,8 @@ impl GameInfo {
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
 
-                        if current_mino.mino == Mino::T && valid_tspin(&self.tetris_board, next_position) {
-                            self.in_spin = SpinType::TSpin; 
+                        if current_mino.mino == Mino::T {
+                            self.in_spin = valid_tspin(&self.tetris_board, &current_mino, next_position, i); 
                         }
 
                         break;
@@ -374,8 +374,8 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
-                if current_mino.mino == Mino::T && valid_tspin(&self.tetris_board, self.current_position) {
-                    self.in_spin = SpinType::TSpin; 
+                if current_mino.mino == Mino::T {
+                    self.in_spin = valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0); 
                 }
 
             } else {
@@ -396,10 +396,10 @@ impl GameInfo {
                         current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
-
-                        if current_mino.mino == Mino::T && valid_tspin(&self.tetris_board, next_position) {
-                            self.in_spin = SpinType::TSpin; 
+                        if current_mino.mino == Mino::T {
+                            self.in_spin = valid_tspin(&self.tetris_board, &current_mino, next_position, i); 
                         }
+
                         break;
                     }
                 }
