@@ -96,9 +96,9 @@ impl GameInfo {
             message: None,
             in_spin: SpinType::None,
             lock_delay: 500,
-            das: 300,
-            sdf: 0,
-            arr: 0,
+            das: 300, //미사용
+            sdf: 0,   //미사용
+            arr: 0,   //미사용
         }
     }
 

@@ -97,6 +97,7 @@ impl GameManager {
             }
         });
 
+        // 렌더링 스레드
         let game_info = Arc::clone(&self.game_info);
         spawn_local(async move {
             let f = Rc::new(RefCell::new(None));
