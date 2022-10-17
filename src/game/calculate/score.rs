@@ -28,15 +28,20 @@ pub fn calculate_score(
             }
             _ => {}
         },
-        SpinType::Mini => match line {
+        SpinType::Spin => match line {
             1 => score += 50 + back2back_bonus,
             2 => score += 100 + back2back_bonus,
             _ => {}
         },
-        SpinType::Spin => match line {
+        SpinType::TSpin => match line {
             1 => score += 500 + back2back_bonus,
             2 => score += 1000 + back2back_bonus,
             3 => score += 2000 + back2back_bonus,
+            _ => {}
+        },
+        SpinType::Mini => match line {
+            1 => score += 50 + back2back_bonus,
+            2 => score += 100 + back2back_bonus,
             _ => {}
         },
     }
