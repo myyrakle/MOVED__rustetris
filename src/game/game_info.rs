@@ -346,7 +346,7 @@ impl GameInfo {
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
 
-                        if current_mino.mino == Mino::T || valid_tspin(&self.tetris_board, next_position) {
+                        if current_mino.mino == Mino::T && valid_tspin(&self.tetris_board, next_position) {
                             self.in_spin = SpinType::TSpin; 
                         }
 
