@@ -3,12 +3,14 @@ use std::sync::{Arc, Mutex};
 
 use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
+use wasm_bindgen::prelude::Closure;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::contants::character::SPECIAL_SPACE;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
+use crate::js_bind::request_animation_frame::request_animation_frame;
 use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
@@ -92,6 +94,9 @@ impl GameManager {
                 }
             }
         });
+
+        let closure = Closure::new(|| {});
+        request_animation_frame(&closure);
 
         // 렌더링 스레드
         let game_info = Arc::clone(&self.game_info);

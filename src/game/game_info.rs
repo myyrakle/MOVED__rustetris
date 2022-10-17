@@ -338,8 +338,8 @@ impl GameInfo {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape;
                 if current_mino.mino == Mino::T {
-                    self.in_spin =
-                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                    // self.in_spin =
+                    //     valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
                 }
             } else {
                 for i in 0..4 {
@@ -361,8 +361,8 @@ impl GameInfo {
                         current_mino.cells = next_shape;
 
                         if current_mino.mino == Mino::T {
-                            self.in_spin =
-                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
+                            // self.in_spin =
+                            //     valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;
@@ -387,8 +387,8 @@ impl GameInfo {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
                 if current_mino.mino == Mino::T {
-                    self.in_spin =
-                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                    // self.in_spin =
+                    //     valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
                 }
             } else {
                 for i in 0..4 {
@@ -409,8 +409,8 @@ impl GameInfo {
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
                         if current_mino.mino == Mino::T {
-                            self.in_spin =
-                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
+                            // self.in_spin =
+                            //     valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;
