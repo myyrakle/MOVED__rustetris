@@ -53,16 +53,21 @@ pub struct GameInfo {
 impl GameInfo {
     pub fn with_option(option: GameOption) -> Self {
         let column_count = option.column_count;
-        let row_count = option.row_count;
+        let hidden_row_count = 4;
+        let row_count = option.row_count + hidden_row_count;
         let board_height = option.board_height;
         let board_width = option.board_width;
         let bag_mode = option.bag_mode;
         let tetris_board = TetrisBoard {
-            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
+            cells: vec![
+                vec![TetrisCell::Empty; column_count as usize];
+                row_count as usize + hidden_row_count as usize
+            ],
             column_count,
             row_count,
             board_height,
             board_width,
+            hidden_row_count,
         };
 
         let mino_list = vec![
@@ -348,8 +353,8 @@ impl GameInfo {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape;
                 if current_mino.mino == Mino::T {
-                    // self.in_spin =
-                    //     valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                    self.in_spin =
+                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
                 }
             } else {
                 for i in 0..4 {
@@ -371,8 +376,8 @@ impl GameInfo {
                         current_mino.cells = next_shape;
 
                         if current_mino.mino == Mino::T {
-                            // self.in_spin =
-                            //     valid_tspin(&self.tetris_board, &current_mino, next_position, i);
+                            self.in_spin =
+                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;
@@ -397,8 +402,8 @@ impl GameInfo {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
                 if current_mino.mino == Mino::T {
-                    // self.in_spin =
-                    //     valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                    self.in_spin =
+                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
                 }
             } else {
                 for i in 0..4 {
@@ -419,8 +424,8 @@ impl GameInfo {
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
                         if current_mino.mino == Mino::T {
-                            // self.in_spin =
-                            //     valid_tspin(&self.tetris_board, &current_mino, next_position, i);
+                            self.in_spin =
+                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;

@@ -36,6 +36,7 @@ impl GameManager {
             tetris_board.board_height,
             tetris_board.column_count,
             tetris_board.row_count,
+            tetris_board.hidden_row_count,
         );
 
         let next = game_info.bag.iter().map(|e| e.mino.into()).collect();
@@ -136,6 +137,7 @@ impl GameManager {
                     tetris_board.board_height,
                     tetris_board.column_count,
                     tetris_board.row_count,
+                    tetris_board.hidden_row_count,
                 );
 
                 let next = game_info.bag.iter().map(|e| e.mino.into()).collect();
@@ -206,6 +208,7 @@ impl GameManager {
             column_count,
             board_height: game_info.tetris_board.board_height,
             board_width: game_info.tetris_board.board_width,
+            hidden_row_count: game_info.tetris_board.hidden_row_count,
         };
 
         Some(())
