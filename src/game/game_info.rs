@@ -1,7 +1,8 @@
 use std::collections::VecDeque;
 
 use crate::game::{
-    valid_mino, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType, TetrisBoard, TetrisCell,
+    valid_mino, valid_tspin, BagType, ClearInfo, GameRecord, MinoShape, Point, SpinType,
+    TetrisBoard, TetrisCell,
 };
 
 use crate::js_bind::write_text::write_text;
@@ -185,7 +186,7 @@ impl GameInfo {
             }
 
             match self.in_spin {
-                SpinType::Spin => {
+                SpinType::TSpin => {
                     is_back2back = true;
 
                     match line {
@@ -195,6 +196,7 @@ impl GameInfo {
                         _ => {}
                     }
                 }
+                SpinType::Spin => {}
                 SpinType::Mini => {
                     is_back2back = true;
 
@@ -335,6 +337,10 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape;
+                if current_mino.mino == Mino::T {
+                    self.in_spin =
+                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                }
             } else {
                 for i in 0..4 {
                     let mut next_position = self.current_position.clone();
@@ -355,7 +361,8 @@ impl GameInfo {
                         current_mino.cells = next_shape;
 
                         if current_mino.mino == Mino::T {
-                            self.in_spin = SpinType::Spin; // TODO: 미니스핀 구분 필요
+                            self.in_spin =
+                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;
@@ -379,6 +386,10 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
+                if current_mino.mino == Mino::T {
+                    self.in_spin =
+                        valid_tspin(&self.tetris_board, &current_mino, self.current_position, 0);
+                }
             } else {
                 for i in 0..4 {
                     let mut next_position = self.current_position.clone();
@@ -397,9 +408,9 @@ impl GameInfo {
                         current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
-
                         if current_mino.mino == Mino::T {
-                            self.in_spin = SpinType::Spin; // TODO: 미니스핀 구분 필요
+                            self.in_spin =
+                                valid_tspin(&self.tetris_board, &current_mino, next_position, i);
                         }
 
                         break;

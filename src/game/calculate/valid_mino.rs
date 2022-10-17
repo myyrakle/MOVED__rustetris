@@ -1,4 +1,4 @@
-use crate::game::{MinoShapeCells, Point, TetrisBoard, TetrisCell};
+use crate::game::{MinoShapeCells, Point, TetrisBoard, TetrisCell, SpinType, MinoShape};
 
 // 미노 충돌여부 검증
 pub fn valid_mino(board: &TetrisBoard, mino: &MinoShapeCells, point: Point) -> bool {
@@ -67,4 +67,47 @@ pub fn valid_mino(board: &TetrisBoard, mino: &MinoShapeCells, point: Point) -> b
     }
 
     true
+}
+
+pub fn valid_tspin(board: &TetrisBoard, mino: &MinoShape, point: Point, kick_try: usize) -> SpinType {
+    let mut corner_fill_count: usize = 0; // if >=3 return true
+    let rotation_count = mino.rotation_count;
+    let mut head_fill_count:usize = 0;
+
+    for x in [point.x, point.x + 2] {
+        for y in [point.y, point.y + 2] {
+            //해당 위치가 보드 하좌우를 넘어서는 경우
+            if x < 0 || x >= board.column_count.into() || y >= board.row_count as i64
+            {
+                corner_fill_count += 1;
+                continue;
+            }
+            else {
+                if !board.cells[y as usize][x as usize].is_empty() {
+                    corner_fill_count += 1;
+                    match rotation_count{
+                        0 => if y - point.y ==0 {head_fill_count += 1;},
+                        1 => if x - point.x ==2 {head_fill_count += 1;},
+                        2 => if y - point.y ==2 {head_fill_count += 1;},
+                        3 => if x - point.x ==0 {head_fill_count += 1;},
+                        _ => {}
+            
+                    }
+                    continue;
+                }
+            }
+        }
+    }
+
+    if corner_fill_count>=3 {
+        if head_fill_count == 2 || kick_try == 3
+        {
+            return SpinType::TSpin;
+        }
+        else 
+        {
+            return SpinType::Mini;
+        }
+    }
+    else {return SpinType::None;}
 }
