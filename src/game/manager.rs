@@ -140,9 +140,7 @@ impl GameManager {
                     write_text("quad", game_info.record.quad.to_string());
 
                     if let Some(back2back) = game_info.back2back {
-                        if back2back == 0 {
-                            write_text("back2back", "Back2Back".into());
-                        } else {
+                        if back2back != 0 {
                             write_text("back2back", format!("Back2Back {}", back2back));
                         }
                     } else {

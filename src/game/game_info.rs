@@ -195,7 +195,16 @@ impl GameInfo {
                         _ => {}
                     }
                 }
-                SpinType::Mini => {}
+                SpinType::Mini => {
+                    is_back2back = true;
+
+                    match line {
+                        1 => self.message = Some("T-Spin Single mini".into()),
+                        2 => self.message = Some("T-Spin Double mini".into()),
+                        3 => self.message = Some("T-Spin Triple mini".into()),
+                        _ => {}
+                    }
+                }
                 SpinType::None => {}
             }
 
