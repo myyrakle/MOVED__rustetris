@@ -8,7 +8,7 @@ use gloo_timers::future::IntervalStream;
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen_futures::spawn_local;
 
-use crate::contants::character::SPECIAL_SPACE;
+use crate::constants::character::SPECIAL_SPACE;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
