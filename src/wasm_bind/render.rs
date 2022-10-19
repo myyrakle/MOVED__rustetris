@@ -7,7 +7,7 @@ use std::f64;
 use std::rc::Rc;
 use wasm_bindgen::JsCast;
 
-use crate::contants::color::{
+use crate::constants::color::{
     BOARD_DEFAULT_COLOR, BOARD_STROKE_DEFAULT_COLOR, HOLD_DEFAULT_COLOR, HOLD_STROKE_DEFAULT_COLOR,
     NEXT_DEFAULT_COLOR, NEXT_STROKE_DEFAULT_COLOR,
 };
