@@ -1,10 +1,10 @@
+use futures_util::stream::StreamExt;
+use gloo_timers::future::IntervalStream;
 use std::cell::RefCell;
 use std::collections::VecDeque;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
-use futures_util::stream::StreamExt;
-use gloo_timers::future::IntervalStream;
 use wasm_bindgen::prelude::Closure;
 use wasm_bindgen_futures::spawn_local;
 
@@ -72,22 +72,35 @@ impl GameManager {
 
         log::info!("GAME START");
 
-        // 틱 스레드
+        // tick - 중력 스레드
         let game_info = Arc::clone(&self.game_info);
         spawn_local(async move {
+            // 시작 기준점
+            let mut start_point = instant::Instant::now();
+
             let game_info = game_info;
             let _game_info = Arc::clone(&game_info);
 
-            let tick_interval = game_info.lock().ok().unwrap().tick_interval;
-
-            let mut future_list = IntervalStream::new(tick_interval as u32).map(move |_| {
+            // 기본 100밀리초 단위마다 반복해서 타임 체크 (저 세밀한 제어가 필요하다면 문제없는 선에서 낮춰도 무방)
+            let mut future_list = IntervalStream::new(100).map(move |_| {
                 let mut game_info = game_info.lock().unwrap();
 
-                game_info.tick();
+                let duration = start_point.elapsed();
+
+                // tick이 발생하지 않은 시점에서 경과된 시간.
+                let elapsed_time = duration.as_millis();
+
+                // 여기서 딜레이 커스텀하면 될듯
+                let delay = game_info.tick_interval.into();
+
+                // 지정된 딜레이만큼 지났다면 다시 초기화하고 tick 한칸 수행
+                if elapsed_time >= delay {
+                    start_point = instant::Instant::now();
+                    game_info.tick();
+                }
             });
 
             let game_info = _game_info;
-
             loop {
                 if game_info.lock().unwrap().on_play {
                     let next = future_list.next();
