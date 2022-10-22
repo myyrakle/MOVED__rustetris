@@ -208,9 +208,17 @@ impl GameManager {
         self.init_board()?;
         self.init_score()?;
         self.init_context()?;
+        self.init_running_time()?;
 
         Some(())
     }
+
+    pub fn init_running_time(&self) -> Option<()> {
+        let mut game_info = self.game_info.lock().ok().unwrap();
+        game_info.running_time = 0;
+        Some(())
+    }
+
 
     // 보드 초기화
     pub fn init_board(&self) -> Option<()> {
