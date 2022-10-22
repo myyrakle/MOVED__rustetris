@@ -1,5 +1,5 @@
 pub mod components;
-pub mod contants;
+pub mod constants;
 pub mod game;
 pub mod js_bind;
 pub mod options;
