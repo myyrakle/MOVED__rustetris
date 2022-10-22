@@ -100,6 +100,10 @@ pub fn game_box() -> Html {
                 <p class="font-mono text-2xl text-center">{"Next"}</p>
                 <canvas id="next-canvas" class="" width="120" height="520"></canvas>
             </div>
+
+            <audio autoplay={true} loop={true}>
+                <source src={"resource/sound/rustetris.ogg"} type={"audio/mp3"}/>
+            </audio>
         </div>
     }
 }
