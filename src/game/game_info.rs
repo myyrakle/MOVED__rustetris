@@ -534,4 +534,58 @@ impl GameInfo {
         self.current_mino = None;
         write_text("message", "Game Over".into());
     }
+
+    // 보드 초기화
+    pub fn init_board(&mut self) -> Option<()> {
+        let column_count = self.tetris_board.column_count;
+        let row_count = self.tetris_board.row_count;
+
+        self.tetris_board = TetrisBoard {
+            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
+            row_count,
+            column_count,
+            board_height: self.tetris_board.board_height,
+            board_width: self.tetris_board.board_width,
+            hidden_row_count: self.tetris_board.hidden_row_count,
+        };
+
+        Some(())
+    }
+
+    // 컨텍스트 초기화
+    pub fn init_context(&mut self) -> Option<()> {
+        self.back2back = None;
+        self.combo = None;
+        self.in_spin = SpinType::None;
+        self.message = None;
+
+        Some(())
+    }
+
+    // 가방 초기화
+    pub fn init_bag(&mut self) -> Option<()> {
+        self.bag = VecDeque::new();
+        self.current_mino = None;
+        self.hold_used = false;
+        self.hold = None;
+
+        Some(())
+    }
+
+    // 점수 초기화
+    pub fn init_score(&mut self) -> Option<()> {
+        self.record = Default::default();
+
+        Some(())
+    }
+
+    // 게임 초기화
+    pub fn init_game(&mut self) -> Option<()> {
+        self.init_bag()?;
+        self.init_board()?;
+        self.init_score()?;
+        self.init_context()?;
+
+        Some(())
+    }
 }

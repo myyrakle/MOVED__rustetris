@@ -1,7 +1,6 @@
 use futures_util::stream::StreamExt;
 use gloo_timers::future::IntervalStream;
 use std::cell::RefCell;
-use std::collections::VecDeque;
 use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 
@@ -11,14 +10,10 @@ use wasm_bindgen_futures::spawn_local;
 use crate::constants::character::SPECIAL_SPACE;
 use crate::constants::time::TICK_LOOP_INTERVAL;
 use crate::game::game_info::GameInfo;
-use crate::game::tetris_board::TetrisBoard;
-use crate::game::tetris_cell::TetrisCell;
 use crate::js_bind::request_animation_frame::request_animation_frame;
 use crate::js_bind::write_text::write_text;
 use crate::options::game_option::GameOption;
 use crate::wasm_bind;
-
-use super::SpinType;
 
 pub struct GameManager {
     pub game_info: Arc<Mutex<GameInfo>>,
@@ -204,61 +199,7 @@ impl GameManager {
 
     // 게임 초기화
     pub fn init_game(&self) -> Option<()> {
-        self.init_bag()?;
-        self.init_board()?;
-        self.init_score()?;
-        self.init_context()?;
-
-        Some(())
-    }
-
-    // 보드 초기화
-    pub fn init_board(&self) -> Option<()> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-        let column_count = game_info.tetris_board.column_count;
-        let row_count = game_info.tetris_board.row_count;
-
-        game_info.tetris_board = TetrisBoard {
-            cells: vec![vec![TetrisCell::Empty; column_count as usize]; row_count as usize],
-            row_count,
-            column_count,
-            board_height: game_info.tetris_board.board_height,
-            board_width: game_info.tetris_board.board_width,
-            hidden_row_count: game_info.tetris_board.hidden_row_count,
-        };
-
-        Some(())
-    }
-
-    // 컨텍스트 초기화
-    pub fn init_context(&self) -> Option<()> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-
-        game_info.back2back = None;
-        game_info.combo = None;
-        game_info.in_spin = SpinType::None;
-        game_info.message = None;
-
-        Some(())
-    }
-
-    // 가방 초기화
-    pub fn init_bag(&self) -> Option<()> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-
-        game_info.bag = VecDeque::new();
-        game_info.current_mino = None;
-        game_info.hold_used = false;
-        game_info.hold = None;
-
-        Some(())
-    }
-
-    // 점수 초기화
-    pub fn init_score(&self) -> Option<()> {
-        let mut game_info = self.game_info.lock().ok().unwrap();
-
-        game_info.record = Default::default();
+        self.game_info.lock().unwrap().init_game();
 
         Some(())
     }
