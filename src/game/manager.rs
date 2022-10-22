@@ -9,6 +9,7 @@ use wasm_bindgen::prelude::Closure;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::constants::character::SPECIAL_SPACE;
+use crate::constants::time::TICK_LOOP_INTERVAL;
 use crate::game::game_info::GameInfo;
 use crate::game::tetris_board::TetrisBoard;
 use crate::game::tetris_cell::TetrisCell;
@@ -81,9 +82,11 @@ impl GameManager {
             let game_info = game_info;
             let _game_info = Arc::clone(&game_info);
 
-            // 기본 100밀리초 단위마다 반복해서 타임 체크 (저 세밀한 제어가 필요하다면 문제없는 선에서 낮춰도 무방)
-            let mut future_list = IntervalStream::new(100).map(move |_| {
+            // 기본 100밀리초 단위마다 반복해서 타임 체크 (더 세밀한 제어가 필요하다면 문제없는 선에서 낮춰도 무방)
+            let mut future_list = IntervalStream::new(TICK_LOOP_INTERVAL).map(move |_| {
                 let mut game_info = game_info.lock().unwrap();
+
+                game_info.running_time += TICK_LOOP_INTERVAL as u128;
 
                 let duration = start_point.elapsed();
 

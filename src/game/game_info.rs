@@ -15,6 +15,8 @@ use super::{calculate_score, Mino};
 pub struct GameInfo {
     pub record: GameRecord,
 
+    pub running_time: u128, // 실행시간 (밀리초)
+
     pub on_play: bool,                   //게임 진행중 여부
     pub current_position: Point,         //현재 미노 좌표
     pub current_mino: Option<MinoShape>, //현재 미노 형태
@@ -104,6 +106,7 @@ impl GameInfo {
             das: 300, //미사용
             sdf: 0,   //미사용
             arr: 0,   //미사용
+            running_time: 0,
         }
     }
 
