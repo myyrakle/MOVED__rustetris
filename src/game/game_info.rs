@@ -203,7 +203,7 @@ impl GameInfo {
                 }
             }
 
-            match self.in_spin {
+            match self.in_spin.clone() {
                 SpinType::TSpin => {
                     is_back2back = true;
 
@@ -249,7 +249,13 @@ impl GameInfo {
             self.combo = None;
         }
 
-        let score = calculate_score(line, is_perfect, self.combo, SpinType::None, self.back2back);
+        let score = calculate_score(
+            line,
+            is_perfect,
+            self.combo,
+            self.in_spin.clone(),
+            self.back2back,
+        );
         self.record.score += score;
 
         self.after_clear();
