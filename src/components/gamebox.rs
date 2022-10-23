@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
-use yew::prelude::*;
+use web_sys::KeyboardEvent;
+use yew::{function_component, html, use_state, Callback};
 
 use crate::game::manager::GameManager;
 use crate::js_bind::focus::focus;
