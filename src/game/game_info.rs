@@ -333,10 +333,6 @@ impl GameInfo {
                     if self.lock_delay_count < 8 {
                         self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
                     }
-                    //여기에 록딜레이 행동을 돕는 코드가 들어가야 하는데.. 
-                    //현재시간을 전달?
-                    //틱일단미루고좀봐봐
-                    //7번넘어가면 뭐라안할게
 
                 }
             }
@@ -361,7 +357,7 @@ impl GameInfo {
 
     // 왼쪽 회전 (반시계방향)
     pub fn left_rotate(&mut self) {
-        if let Some(current_mino) = &self.current_mino {
+        if let Some(current_mino) = &mut self.current_mino {
             if current_mino.mino == Mino::O {
                 return;
             }
@@ -370,9 +366,9 @@ impl GameInfo {
 
             rotate_left(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
-                self.current_mino.unwrap().rotation_count = (self.current_mino.unwrap().rotation_count + 3) % 4;
-                self.current_mino.unwrap().cells = next_shape; // 돌리는거 성공하고 나서
-                if self.current_position == self.get_hard_drop_position().unwrap() { //현위치가 하드드롭시 위치와 같은지 확인하고
+                current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
+                current_mino.cells = next_shape; // 돌리는거 성공하고 나서
+                if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
                     if self.lock_delay_count < 8 {
                         self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
                     }
@@ -397,15 +393,15 @@ impl GameInfo {
                         );
                     }
                     if valid_mino(&self.tetris_board, &next_shape, next_position) {
-                        self.current_mino.unwrap().rotation_count = (self.current_mino.unwrap().rotation_count + 3) % 4;
+                        current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                         self.current_position = next_position;
-                        self.current_mino.unwrap().cells = next_shape;// 돌리는거 성공하고 나서
-                        if self.current_position == self.get_hard_drop_position().unwrap() { //현위치가 하드드롭시 위치와 같은지 확인하고
+                        current_mino.cells = next_shape;// 돌리는거 성공하고 나서
+                        if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
                             if self.lock_delay_count < 8 {
                                 self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
                             }
                         }
-        
+                
 
                         if current_mino.mino == Mino::T {
                             self.in_spin =
@@ -421,7 +417,7 @@ impl GameInfo {
 
     // 오른쪽 회전 (시계방향)
     pub fn right_rotate(&mut self) {
-        if let Some(current_mino) = &self.current_mino {
+        if let Some(current_mino) = &mut self.current_mino {
             if current_mino.mino == Mino::O {
                 return;
             }
@@ -431,10 +427,10 @@ impl GameInfo {
             let mut next_shape = current_mino.cells.clone();
             rotate_right(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
-                self.current_mino.unwrap().rotation_count = (current_mino.rotation_count + 1) % 4;
-                self.current_mino.unwrap().cells = next_shape; // 돌리는거 성공하고 나서
-                if self.current_position == self.get_hard_drop_position().unwrap() { //현위치가 하드드롭시 위치와 같은지 확인하고
-                   if self.lock_delay_count < 8 {
+                current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
+                current_mino.cells = next_shape; // 돌리는거 성공하고 나서
+                if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
+                    if self.lock_delay_count < 8 {
                         self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
                     }
                 }
@@ -458,14 +454,14 @@ impl GameInfo {
                         );
                     }
                     if valid_mino(&self.tetris_board, &next_shape, next_position) {
-                        self.current_mino.unwrap().rotation_count = (self.current_mino.unwrap().rotation_count + 1) % 4;
+                        current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                         self.current_position = next_position;// 돌리는거 성공하고 나서
-                        if self.current_position == self.get_hard_drop_position().unwrap() { //현위치가 하드드롭시 위치와 같은지 확인하고
+                        current_mino.cells = next_shape;
+                        if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
                             if self.lock_delay_count < 8 {
                                 self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
                             }
-                                }
-                        self.current_mino.unwrap().cells = next_shape;
+                        }
                         if current_mino.mino == Mino::T {
                             self.in_spin =
                                 valid_tspin(&self.tetris_board, &current_mino, next_position, i);
