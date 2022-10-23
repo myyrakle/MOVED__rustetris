@@ -62,7 +62,6 @@ impl GameManager {
             return None;
         }
 
-        self.init_game()?;
         self.game_info.lock().ok()?.on_play = true;
         self.game_info.lock().ok()?.lose = false;
 
@@ -70,6 +69,7 @@ impl GameManager {
 
         // tick - 중력 스레드
         let game_info = Arc::clone(&self.game_info);
+        let mut former_lock_delay_count:u8 = 0;
         spawn_local(async move {
             // 시작 기준점
             let mut start_point = instant::Instant::now();
@@ -80,7 +80,12 @@ impl GameManager {
             // 기본 100밀리초 단위마다 반복해서 타임 체크 (더 세밀한 제어가 필요하다면 문제없는 선에서 낮춰도 무방)
             let mut future_list = IntervalStream::new(TICK_LOOP_INTERVAL).map(move |_| {
                 let mut game_info = game_info.lock().unwrap();
-
+                if former_lock_delay_count != game_info.lock_delay_count{
+                    if game_info.lock_delay_count<8 {
+                        start_point = instant::Instant::now();
+                    }
+                    former_lock_delay_count = game_info.lock_delay_count;
+                }
                 game_info.running_time += TICK_LOOP_INTERVAL as u128;
 
                 let duration = start_point.elapsed();
@@ -89,7 +94,7 @@ impl GameManager {
                 let elapsed_time = duration.as_millis();
 
                 // 여기서 딜레이 커스텀하면 될듯
-                let delay = game_info.tick_interval.into();
+                let delay = game_info.tick_interval as u128 + (game_info.lock_delay as u128);
 
                 // 지정된 딜레이만큼 지났다면 다시 초기화하고 tick 한칸 수행
                 if elapsed_time >= delay {
@@ -197,10 +202,22 @@ impl GameManager {
         Some(())
     }
 
-    // 게임 초기화
-    pub fn init_game(&self) -> Option<()> {
-        self.game_info.lock().unwrap().init_game();
 
+    pub fn init_running_time(&self) -> Option<()> {
+        let mut game_info = self.game_info.lock().ok().unwrap();
+        game_info.running_time = 0;
         Some(())
     }
+
+
+    // 보드 초기화
+
+    // 컨텍스트 초기화
+
+
+    // 가방 초기화
+
+
+    // 점수 초기화
+
 }

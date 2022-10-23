@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Point {
     pub x: i64,
     pub y: i64,
@@ -27,4 +27,5 @@ impl Point {
         self.y = self.y + y;
         self
     }
+
 }
