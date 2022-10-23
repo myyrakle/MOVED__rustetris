@@ -1,9 +1,9 @@
 # rustetris
 
 Yew.rs, Canvas로 구현된 웹 테트리스
-    
-페이지: https://tetris.myyrakle.com/  
-
+      
+프로젝트는 https://github.com/tetrust/tetrust-front로 이전함   
+ 
 ## 실행법
 
 기본설정
