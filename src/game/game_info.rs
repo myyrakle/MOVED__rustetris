@@ -363,7 +363,7 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                 current_mino.cells = next_shape; 
-                if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
+                if !valid_mino(&self.tetris_board, &current_mino.cells, self.current_position.add_y(1)){ 
                     self.lock_delay_count += 1;
                 }
 
@@ -389,7 +389,7 @@ impl GameInfo {
                         current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
-                        if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
+                        if !valid_mino(&self.tetris_board, &current_mino.cells, self.current_position.add_y(1)){ 
                             self.lock_delay_count += 1;
                         }
                 
@@ -420,7 +420,7 @@ impl GameInfo {
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                 current_mino.cells = next_shape;
-                if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
+                if !valid_mino(&self.tetris_board, &current_mino.cells, self.current_position.add_y(1)){ 
                     self.lock_delay_count += 1;
                 }
 
@@ -446,7 +446,7 @@ impl GameInfo {
                         current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
                         self.current_position = next_position;
                         current_mino.cells = next_shape;
-                        if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
+                        if !valid_mino(&self.tetris_board, &current_mino.cells, self.current_position.add_y(1)){ 
                             self.lock_delay_count += 1;
                         }
                         if current_mino.mino == Mino::T {
