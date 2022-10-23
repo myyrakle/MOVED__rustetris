@@ -46,7 +46,7 @@ pub struct GameInfo {
     pub in_spin: SpinType, // 현재 스핀 상태 확인
 
     pub lock_delay: u32, // 바닥에 닿을때 고정하기까지의 딜레이. 밀리초 단위.
-    pub lock_delay_count: u8, // 하좌우이동, 좌우회전 성공 시 바닥에 닿아있는 것으로 확인되면 lock_delay countdown을 시작
+    pub lock_delay_count: u8, // 하좌우이동, 좌우회전 성공 시 록딜레이 카운트가 올라감. 틱스레드에서 변화를 읽고 start를 초기화. 8이상이면 안올라감
 
     pub sdf: u32, // soft drop fast. 소프트 드랍 속도
     pub das: u32, // delay auto shift. 밀리초 단위.
@@ -329,11 +329,8 @@ impl GameInfo {
 
             if valid_mino(&self.tetris_board, &current_mino.cells, next_position) {
                 self.current_position = next_position;
-                if self.current_position == self.get_hard_drop_position().unwrap() { 
-                    if self.lock_delay_count < 8 {
-                        self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
-                    }
-
+                if !valid_mino(&self.tetris_board, &current_mino.cells, self.current_position.add_y(1)) { 
+                    self.lock_delay_count += 1;
                 }
             }
         }
@@ -345,11 +342,9 @@ impl GameInfo {
             let next_position = self.current_position.clone().add_x(1);
 
             if valid_mino(&self.tetris_board, &current_mino.cells, next_position) {
-                self.current_position = next_position; //이동이 성공하면
-                if self.current_position == self.get_hard_drop_position().unwrap() { //현위치가 하드드롭시 위치와 같은지 확인하고
-                    if self.lock_delay_count < 8 {
-                        self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
-                    }
+                self.current_position = next_position; 
+                if !valid_mino(&self.tetris_board, &current_mino.cells, self.current_position.add_y(1)) { 
+                    self.lock_delay_count += 1;
                 }
             }
         }
@@ -367,11 +362,9 @@ impl GameInfo {
             rotate_left(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
-                current_mino.cells = next_shape; // 돌리는거 성공하고 나서
+                current_mino.cells = next_shape; 
                 if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
-                    if self.lock_delay_count < 8 {
-                        self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
-                    }
+                    self.lock_delay_count += 1;
                 }
 
                 if current_mino.mino == Mino::T {
@@ -395,11 +388,9 @@ impl GameInfo {
                     if valid_mino(&self.tetris_board, &next_shape, next_position) {
                         current_mino.rotation_count = (current_mino.rotation_count + 3) % 4;
                         self.current_position = next_position;
-                        current_mino.cells = next_shape;// 돌리는거 성공하고 나서
+                        current_mino.cells = next_shape;
                         if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
-                            if self.lock_delay_count < 8 {
-                                self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
-                            }
+                            self.lock_delay_count += 1;
                         }
                 
 
@@ -428,11 +419,9 @@ impl GameInfo {
             rotate_right(&mut next_shape, real_length);
             if valid_mino(&self.tetris_board, &next_shape, self.current_position) {
                 current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
-                current_mino.cells = next_shape; // 돌리는거 성공하고 나서
+                current_mino.cells = next_shape;
                 if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
-                    if self.lock_delay_count < 8 {
-                        self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
-                    }
+                    self.lock_delay_count += 1;
                 }
 
                 if current_mino.mino == Mino::T {
@@ -455,12 +444,10 @@ impl GameInfo {
                     }
                     if valid_mino(&self.tetris_board, &next_shape, next_position) {
                         current_mino.rotation_count = (current_mino.rotation_count + 1) % 4;
-                        self.current_position = next_position;// 돌리는거 성공하고 나서
+                        self.current_position = next_position;
                         current_mino.cells = next_shape;
                         if !valid_mino(&self.tetris_board, &next_shape, self.current_position.add_y(1)){ 
-                            if self.lock_delay_count < 8 {
-                                self.lock_delay_count += 1; // 락딜레이 상태를 켬으로 바꾼다
-                            }
+                            self.lock_delay_count += 1;
                         }
                         if current_mino.mino == Mino::T {
                             self.in_spin =

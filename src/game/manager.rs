@@ -86,7 +86,7 @@ impl GameManager {
             // 기본 100밀리초 단위마다 반복해서 타임 체크 (더 세밀한 제어가 필요하다면 문제없는 선에서 낮춰도 무방)
             let mut future_list = IntervalStream::new(TICK_LOOP_INTERVAL).map(move |_| {
                 let mut game_info = game_info.lock().unwrap();
-                if former_lock_delay_count != game_info.lock_delay_count {
+                if (former_lock_delay_count != game_info.lock_delay_count) && (game_info.lock_delay_count<8){
                     start_point = instant::Instant::now();
                     former_lock_delay_count = game_info.lock_delay_count;
                 }
