@@ -2,7 +2,7 @@
 
 Yew.rs, Canvas로 구현된 웹 테트리스
       
-프로젝트는 `https://github.com/tetrust`로 이전함   
+프로젝트는 [별도 조직](https://github.com/tetrust)으로 이전함   
  
 ## 실행법
 
